@@ -8,7 +8,7 @@ const flightSchema = new Schema({
         required: true,
         unique: true
     },
-    depature: {
+    departure: {
         type: Date,
         required: true
     },
@@ -20,7 +20,7 @@ const flightSchema = new Schema({
         type: Number,
         required: true
     },
-    buisnessSeats: {
+    businessSeats: {
         type: Number,
         required: true
     },

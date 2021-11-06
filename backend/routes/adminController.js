@@ -15,25 +15,35 @@ router.post('/newAdmin', async (req, res) => {
         password: req.body.password
     });
 
-    try{
+    try {
         await newAdmin.save();
         res.send('Admin added successfully');
-    } catch(e) {
+    } catch (e) {
         res.send('An error occured');
     }
 });
 
 // create flight
 router.post('/flight', async (req, res) => {
+    console.log(req.body)
     const newFlight = new Flight(
         req.body
     );
 
-    try{
+    try {
         await newFlight.save();
-        res.send('Flight added successfully');
-    } catch(e) {
-        res.send('An error occured');
+        res.status(200).send('Flight added successfully');
+    } catch (e) {
+        res.status(400).send('An error occured');
+    }
+});
+
+router.get('/flights', async (req, res) => {
+    try {
+        const allFlights = await Flight.find();
+        res.status(200).send(allFlights);
+    } catch (e) {
+        res.status(400).send('An error occured');
     }
 });
 

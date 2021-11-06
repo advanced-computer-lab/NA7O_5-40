@@ -1,0 +1,21 @@
+.login {
+  background-color: rgba(243, 235, 235, 0.787);
+  box-shadow: 1px 0px 10px 20px rgba(243, 235, 235, 0.787);
+  width: 40%;
+  color: white;
+  height: 60%;
+  margin: 0 auto;
+  /* background-image: url("../login.jpeg"); */
+}
+
+.login-form {
+  padding: 15px;
+  margin-top: 5%;
+  color: white; 
+}
+
+.avatar-login{
+  /* margin-left: 40%; */
+  margin-top: 10%;
+  color: white;
+}

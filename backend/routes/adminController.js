@@ -24,6 +24,22 @@ router.post('/newAdmin', async (req, res) => {
 });
 
 // create flight
+router.post('/flight/update', async(req,res) =>{
+    console.log(req.body)
+    const newFlight = new Flight(
+        req.body
+    );
+
+    Flight.findByIdAndUpdate(req.body.Id, req.body, function(err,newFlight){
+        if (err){
+            console.log(err)
+        }
+        else{
+            console.log("Updated User : ", newFlight);
+        }
+    });
+})
+
 router.post('/flight/create', async (req, res) => {
     console.log(req.body)
     const newFlight = new Flight(

@@ -24,7 +24,7 @@ router.post('/newAdmin', async (req, res) => {
 });
 
 // create flight
-router.post('/flight', async (req, res) => {
+router.post('/flight/create', async (req, res) => {
     console.log(req.body)
     const newFlight = new Flight(
         req.body

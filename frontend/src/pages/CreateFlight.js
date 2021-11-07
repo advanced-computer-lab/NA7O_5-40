@@ -37,38 +37,38 @@ function CreateFlight() {
         <div >
             <form onSubmit={formSubmit}>
                 <div class="mb-3">
-                    <label for="flightNo" class="form-label">Flight no</label>
-                    <input onChange={getFlight} type="number" class="form-control" name="flightNo" />
+                    <label  for="flightNo" class="form-label">Flight no</label>
+                    <input required='true' onChange={getFlight} type="number" class="form-control" name="flightNo" />
                 </div>
 
                 <div class="mb-3">
                     <label for="departureDate" class="form-label">Departure date and time</label>
-                    <input onChange={getFlight} type="datetime-local" class="form-control" name="departureDate" />
+                    <input required='true'  onChange={getFlight} type="datetime-local" class="form-control" name="departureDate" />
                 </div>
 
                 <div class="mb-3">
                     <label for="arrivalDate" class="form-label">Arrival date and time</label>
-                    <input onChange={getFlight} type="datetime-local" class="form-control" name="arrivalDate" />
+                    <input required='true'  onChange={getFlight} type="datetime-local" class="form-control" name="arrivalDate" />
                 </div>
 
                 <div class="mb-3">
                     <label for="economySeats" class="form-label">Economy Seats</label>
-                    <input onChange={getFlight} type="number" class="form-control" name="economySeats" />
+                    <input required='true'  onChange={getFlight} type="number" class="form-control" name="economySeats" />
                 </div>
 
                 <div class="mb-3">
                     <label for="businessSeats" class="form-label">Business Seats</label>
-                    <input onChange={getFlight} type="number" class="form-control" name="businessSeats" />
+                    <input required='true'  onChange={getFlight} type="number" class="form-control" name="businessSeats" />
                 </div>
 
                 <div class="mb-3">
                     <label for="departureAirport" class="form-label">Departure Airport</label>
-                    <input onChange={getFlight} type="text" class="form-control" name="departureAirport" />
+                    <input required='true'  onChange={getFlight} type="text" class="form-control" name="departureAirport" />
                 </div>
 
                 <div class="mb-3">
                     <label for="arrivalAirport" class="form-label">Arrival Airport</label>
-                    <input onChange={getFlight} type="text" class="form-control" name="arrivalAirport" />
+                    <input required='true'  onChange={getFlight} type="text" class="form-control" name="arrivalAirport" />
                 </div>
 
                 <button class="btn btn-primary mb-3" onClick={formSubmit}>Submit</button>

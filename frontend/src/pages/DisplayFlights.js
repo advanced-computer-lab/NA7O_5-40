@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Input, Space, Button, InputNumber, Form, Popconfirm, Typography } from 'antd';
+import { Table, Input, Space, Button, InputNumber, Form, Popconfirm, Select } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, FilterOutlined } from '@ant-design/icons';
 
 import Axios from 'axios'
 
+const { Option } = Select;
+
 function DisplayFlights() {
   const [flights, setFlights] = useState([]);
-  const [searchInput, setSearchInputs] = useState('');
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [dateQuery, setDateQuery] = useState('after');
 
-  const navigate = useNavigate();
 
   const getFlightsFromBE = () => {
     Axios.get('http://localhost:8000/admin/flights').then((response) => {
@@ -33,9 +34,6 @@ function DisplayFlights() {
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
         <Input
-          ref={node => {
-            setSearchInputs(node);
-          }}
           placeholder={`Search ${columnName}`}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -105,6 +103,71 @@ function DisplayFlights() {
     setSearchText('');
   };
 
+  // const [dateQuery, setDateQuery] = useState('after');
+  // var dateQuery = 'after';
+  const getDateColumnsProps = (dataIndex, columnName) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
+      return <div style={{ padding: 8 }}>
+
+
+        <Select onChange={(value) => {console.log(value); setDateQuery(value); }} defaultValue="after">
+          <Option key='before' value="before" >Before:</Option>
+          <Option key='after' value="after">After:</Option>
+        </Select>
+
+
+        <Input
+          type='datetime-local'
+          placeholder={`Search ${columnName}`}
+          value={selectedKeys[0]}
+          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<FilterOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+
+
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+
+            }}
+          >
+            Filter
+          </Button>
+        </Space>
+      </div>
+    },
+    filterIcon: filtered => <FilterOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+    onFilter: (value, record) => {
+      
+      console.log(dateQuery)
+      console.log(Date.parse(record[dataIndex]));
+      console.log(Date.parse(value));
+      return  record[dataIndex]
+        ? dateQuery == 'before' ? Date.parse(record[dataIndex]) < Date.parse(value) : Date.parse(record[dataIndex]) >= Date.parse(value)
+        : ''
+    },
+
+  });
+
   const columns = [
     {
       title: 'Flight No',
@@ -116,11 +179,13 @@ function DisplayFlights() {
       title: 'Arrival Date',
       dataIndex: 'arrivalDate',
       key: 'arrival',
+      ...getDateColumnsProps('arrivalDate', 'Arrival Date')
     },
     {
       title: 'Departure Date',
       dataIndex: 'departureDate',
       key: 'departure',
+      ...getDateColumnsProps('departureDate', 'Departure Date')
     },
 
     {
@@ -151,11 +216,12 @@ function DisplayFlights() {
       render: (_, record) => {
         return (
           <div>
-            <Link style={{marginRight: 10}} to="/flight/edit" state={record}>Edit</Link>
+            <Link style={{ marginRight: 10, textDecoration: 'none' }}
+              to="/flight/edit" state={record}>Edit</Link>
 
 
             <Popconfirm title="Sure to delete?" onConfirm={() => deleteFlight(record._id)}>
-              <a style={{color: 'red'}}>Delete</a>
+              <a style={{ color: 'red' }}>Delete</a>
             </Popconfirm>
 
           </div>
@@ -177,8 +243,12 @@ function DisplayFlights() {
 
   return (
     <div>
+
+      <br />
       <Link to="/flights/create">Add new flight</Link>
-      <Table pagination= {false} dataSource={flights} columns={columns} />
+      <br />
+      <br />
+      <Table style={{ padding: 20 }} bordered={true} title={() => 'Flights'} pagination={false} dataSource={flights} columns={columns} />
     </div>
 
   );

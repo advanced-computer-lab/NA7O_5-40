@@ -50,12 +50,12 @@ function EditFlight() {
 
                 <div class="mb-3">
                     <label for="departureDate" class="form-label">Departure date and time</label>
-                    <input value={flight.departureDate} onChange={getFlight} type="datetime-local" class="form-control" name="departureDate" />
+                    <input value={flight.departureDate.split('.')[0]} onChange={getFlight} type="datetime-local" class="form-control" name="departureDate" />
                 </div>
 
                 <div class="mb-3">
                     <label for="arrivalDate" class="form-label">Arrival date and time</label>
-                    <input value={flight.arrivalDate} onChange={getFlight} type="datetime-local" class="form-control" name="arrivalDate" />
+                    <input value={flight.arrivalDate.split('.')[0]} onChange={getFlight} type="datetime-local" class="form-control" name="arrivalDate" />
                 </div>
 
                 <div class="mb-3">

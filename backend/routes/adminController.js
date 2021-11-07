@@ -23,21 +23,21 @@ router.post('/newAdmin', async (req, res) => {
     }
 });
 
-// create flight
-router.post('/flight/update', async(req,res) =>{
-    console.log(req.body)
-    const newFlight = new Flight(
-        req.body
-    );
 
-    Flight.findByIdAndUpdate(req.body.Id, req.body, function(err,newFlight){
-        if (err){
-            console.log(err)
-        }
-        else{
-            console.log("Updated User : ", newFlight);
-        }
-    });
+// create flight
+router.post('/flight/update', async (req, res) => {
+    console.log(req.body);
+    Flight.findByIdAndUpdate(
+        req.body._id,
+        req.body,
+        function (err, newFlight) {
+            if (err) {
+                console.log(err)
+                return res.status(400).send(err);
+            }
+
+            res.status(200).send('Flight updated');
+        });
 })
 
 router.post('/flight/create', async (req, res) => {
@@ -52,6 +52,19 @@ router.post('/flight/create', async (req, res) => {
     } catch (e) {
         res.status(400).send('An error occured');
     }
+});
+
+router.get('/flight/delete/:id', async (req, res) => {
+    console.log(req.params.id);
+    Flight.findByIdAndDelete(req.params.id , function (err, deleteflight) {
+        if (!err) {
+            res.status(200).send('Flight deleted')
+        }
+        else {
+            console.log(err)
+            return res.status(400).send(err);
+        }
+    });
 });
 
 router.get('/flights', async (req, res) => {

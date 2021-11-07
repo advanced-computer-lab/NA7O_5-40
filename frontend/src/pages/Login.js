@@ -18,10 +18,8 @@ const Login = () => {
             username,
             password
         }).then((response) => {
-            setRedirect(true);
-            console.log('HEY');
             //  history.replace('/employee/home')
-            navigate('/')
+            navigate('/flights')
         }).catch((e) => {
             console.log(e)
             setFailed(true)

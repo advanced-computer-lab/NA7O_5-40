@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Input, Space, Button } from 'antd';
+import { Table, Input, Space, Button, InputNumber, Form, Popconfirm, Typography } from 'antd';
 import Highlighter from 'react-highlight-words';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { SearchOutlined } from '@ant-design/icons';
 
@@ -13,13 +14,19 @@ function DisplayFlights() {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
 
-  useEffect(() => {
+  const navigate = useNavigate();
+
+  const getFlightsFromBE = () => {
     Axios.get('http://localhost:8000/admin/flights').then((response) => {
       console.log(response.data);
       setFlights(response.data);
     }).catch((e) => {
       console.log(e)
     })
+  }
+
+  useEffect(() => {
+    getFlightsFromBE();
   }, []);
 
   const getColumnSearchProps = (dataIndex, columnName) => ({
@@ -27,7 +34,6 @@ function DisplayFlights() {
       <div style={{ padding: 8 }}>
         <Input
           ref={node => {
-            // searchInput = node;
             setSearchInputs(node);
           }}
           placeholder={`Search ${columnName}`}
@@ -89,20 +95,15 @@ function DisplayFlights() {
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
-    // setState({
-    //   searchText: selectedKeys[0],
-    //   searchedColumn: dataIndex,
-    // });
+
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
 
   const handleReset = clearFilters => {
     clearFilters();
-    // setState({ searchText: '' });
     setSearchText('');
   };
-
 
   const columns = [
     {
@@ -144,10 +145,42 @@ function DisplayFlights() {
       dataIndex: 'economySeats',
       key: 'economySeats',
     },
+    {
+      // title: 'operation',
+      dataIndex: 'operation',
+      render: (_, record) => {
+        return (
+          <div>
+            <Link style={{marginRight: 10}} to="/flight/edit" state={record}>Edit</Link>
+
+
+            <Popconfirm title="Sure to delete?" onConfirm={() => deleteFlight(record._id)}>
+              <a style={{color: 'red'}}>Delete</a>
+            </Popconfirm>
+
+          </div>
+
+        );
+      },
+    },
   ];
 
+  const deleteFlight = (id) => {
+    Axios.get(`http://localhost:8000/admin/flight/delete/${id}`).then((response) => {
+      console.log(response);
+      getFlightsFromBE();
+    }).catch((e) => {
+      console.log(e)
+    })
+  }
+
+
   return (
-    <Table dataSource={flights} columns={columns} />
+    <div>
+      <Link to="/flights/create">Add new flight</Link>
+      <Table pagination= {false} dataSource={flights} columns={columns} />
+    </div>
+
   );
 }
 

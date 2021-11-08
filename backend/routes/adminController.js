@@ -32,8 +32,13 @@ router.post('/flight/update', async (req, res) => {
         req.body,
         function (err, newFlight) {
             if (err) {
-                console.log(err)
-                return res.status(400).send(err);
+                //duplicate key error
+                if (err.code === 11000) {
+                    res.status(400).send('Flight no already exists');
+                    return;
+                }
+
+                return res.status(400).send(err.codeName)
             }
 
             res.status(200).send('Flight updated');
@@ -50,13 +55,18 @@ router.post('/flight/create', async (req, res) => {
         await newFlight.save();
         res.status(200).send('Flight added successfully');
     } catch (e) {
-        res.status(400).send('An error occured');
+        if (e.code === 11000) {
+            res.status(400).send('Flight no already exists');
+            return;
+        }
+
+        res.status(400).send(e.codeName);
     }
 });
 
 router.get('/flight/delete/:id', async (req, res) => {
     console.log(req.params.id);
-    Flight.findByIdAndDelete(req.params.id , function (err, deleteflight) {
+    Flight.findByIdAndDelete(req.params.id, function (err, deleteflight) {
         if (!err) {
             res.status(200).send('Flight deleted')
         }

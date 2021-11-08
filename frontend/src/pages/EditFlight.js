@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
@@ -21,6 +21,11 @@ function EditFlight() {
 
     async function formSubmit(e) {
         e.preventDefault();
+
+        if (Date.parse(flight.arrivalDate) <= Date.parse(flight.departureDate)) {
+            return window.alert('Arrival time cannot be before departure time')
+        }
+
         try {
             await axios.post("http://localhost:8000/admin/flight/update", flight);
 
@@ -29,7 +34,7 @@ function EditFlight() {
         }
 
         catch (err) {
-            window.alert('An error occured')
+            window.alert(err.response.data)
 
         }
     }
@@ -45,40 +50,40 @@ function EditFlight() {
             <form onSubmit={formSubmit}>
                 <div class="mb-3">
                     <label for="flightNo" class="form-label">Flight no</label>
-                    <input required='true'  value={flight.flightNo} onChange={getFlight} type="number" class="form-control" name="flightNo" />
+                    <input required='true' value={flight.flightNo} onChange={getFlight} type="text" class="form-control" name="flightNo" />
                 </div>
 
                 <div class="mb-3">
                     <label for="departureDate" class="form-label">Departure date and time</label>
-                    <input required='true'  value={flight.departureDate.split('.')[0]} onChange={getFlight} type="datetime-local" class="form-control" name="departureDate" />
+                    <input required='true' value={flight.departureDate.split('.')[0]} onChange={getFlight} type="datetime-local" class="form-control" name="departureDate" />
                 </div>
 
                 <div class="mb-3">
                     <label for="arrivalDate" class="form-label">Arrival date and time</label>
-                    <input required='true'  value={flight.arrivalDate.split('.')[0]} onChange={getFlight} type="datetime-local" class="form-control" name="arrivalDate" />
+                    <input required='true' value={flight.arrivalDate.split('.')[0]} onChange={getFlight} type="datetime-local" class="form-control" name="arrivalDate" />
                 </div>
 
                 <div class="mb-3">
                     <label for="economySeats" class="form-label">Economy Seats</label>
-                    <input required='true'  value={flight.economySeats} onChange={getFlight} type="number" class="form-control" name="economySeats" />
+                    <input required='true' value={flight.economySeats} onChange={getFlight} type="number" class="form-control" name="economySeats" />
                 </div>
 
                 <div class="mb-3">
                     <label for="businessSeats" class="form-label">Business Seats</label>
-                    <input required='true'  value={flight.businessSeats} onChange={getFlight} type="number" class="form-control" name="businessSeats" />
+                    <input required='true' value={flight.businessSeats} onChange={getFlight} type="number" class="form-control" name="businessSeats" />
                 </div>
 
                 <div class="mb-3">
                     <label for="departureAirport" class="form-label">Departure Airport</label>
-                    <input required='true'  value={flight.departureAirport} onChange={getFlight} type="text" class="form-control" name="departureAirport" />
+                    <input required='true' value={flight.departureAirport} onChange={getFlight} type="text" class="form-control" name="departureAirport" />
                 </div>
 
                 <div class="mb-3">
                     <label for="arrivalAirport" class="form-label">Arrival Airport</label>
-                    <input required='true'  value={flight.arrivalAirport} onChange={getFlight} type="text" class="form-control" name="arrivalAirport" />
+                    <input required='true' value={flight.arrivalAirport} onChange={getFlight} type="text" class="form-control" name="arrivalAirport" />
                 </div>
 
-                <button class="btn btn-primary mb-3" onClick={formSubmit}>Submit</button>
+                <button class="btn btn-primary mb-3">Submit</button>
             </form>
 
             <Link to="/flights">Back</Link>

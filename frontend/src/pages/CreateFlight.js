@@ -14,6 +14,10 @@ function CreateFlight() {
 
     async function formSubmit(e) {
         e.preventDefault();
+        if(Date.parse(flight.arrivalDate) <= Date.parse(flight.departureDate)){
+            return window.alert('Arrival time cannot be before departure time')
+        }
+
         try {
             await axios.post("http://localhost:8000/admin/flight/create", flight);
             
@@ -22,8 +26,7 @@ function CreateFlight() {
         }
 
         catch (err) {
-            window.alert('An error occured')
-
+            window.alert(err.response.data)
         }
     }
 
@@ -38,7 +41,7 @@ function CreateFlight() {
             <form onSubmit={formSubmit}>
                 <div class="mb-3">
                     <label  for="flightNo" class="form-label">Flight no</label>
-                    <input required='true' onChange={getFlight} type="number" class="form-control" name="flightNo" />
+                    <input required  onChange={getFlight} type="text" class="form-control" name="flightNo" />
                 </div>
 
                 <div class="mb-3">
@@ -58,7 +61,7 @@ function CreateFlight() {
 
                 <div class="mb-3">
                     <label for="businessSeats" class="form-label">Business Seats</label>
-                    <input required='true'  onChange={getFlight} type="number" class="form-control" name="businessSeats" />
+                    <input required  onChange={getFlight} type="number" class="form-control" name="businessSeats" />
                 </div>
 
                 <div class="mb-3">
@@ -71,7 +74,7 @@ function CreateFlight() {
                     <input required='true'  onChange={getFlight} type="text" class="form-control" name="arrivalAirport" />
                 </div>
 
-                <button class="btn btn-primary mb-3" onClick={formSubmit}>Submit</button>
+                <button class="btn btn-primary mb-3" >Submit</button>
             </form>
 
             <Link to="/flights">Back</Link>

@@ -1,10 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
-import CreateFlight from './pages/CreateFlight';
+import CreateFlight from './pages/CreateFlight/CreateFlight.jsx';
 import { Route, Routes } from 'react-router-dom'
-import DisplayFlights from './pages/DisplayFlights';
-import Login from './pages/Login';
-import EditFlight from './pages/EditFlight';
+import DisplayFlights from './pages/DisplayFlights/DisplayFlights.jsx';
+import Login from './pages/Login/Login.jsx';
+import EditFlight from './pages/EditFlight/EditFlight.jsx';
 
 function App() {
   return (

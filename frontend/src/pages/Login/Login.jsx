@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { UserOutlined } from '@ant-design/icons';
 
 import Axios from 'axios';
-import './components.css'
+import '../components.css'
 
 const Login = () => {
     const [failed, setFailed] = useState(false)

@@ -9,6 +9,7 @@ router.get('/home', (req, res) => {
     res.send('home from /admin/home')
 });
 
+
 router.post('/newAdmin', async (req, res) => {
     const newAdmin = new Admin({
         username: req.body.username,

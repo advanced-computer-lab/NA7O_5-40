@@ -17,6 +17,7 @@ mongoose.connect(process.env.DBLINK, { useNewUrlParser: true, useUnifiedTopology
 // routes
 const adminController = require('./routes/adminController');
 const generalController = require('./routes/generalController');
+const userController = require('./routes/userController');
 
 app.get('/home', (req, res) => {
     res.send('home from /')
@@ -24,5 +25,6 @@ app.get('/home', (req, res) => {
 
 app.use('/admin', adminController);
 app.use('/', generalController);
+app.use('/user' , userController);
 
 app.listen(port, () => console.log(`app running on port ${port}`));

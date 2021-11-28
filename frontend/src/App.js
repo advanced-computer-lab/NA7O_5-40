@@ -6,6 +6,7 @@ import DisplayFlights from './pages/DisplayFlights/DisplayFlights.jsx';
 import Login from './pages/Login/Login.jsx';
 import EditFlight from './pages/EditFlight/EditFlight.jsx';
 import EditUserProfile from './pages/EditUserProfile/EditUserProfile';
+import DisplayReservations from './pages/DisplayReservations/DisplayReservations';
 
 function App() {
   return (
@@ -16,9 +17,8 @@ function App() {
         <Route path="/flights" element={<DisplayFlights />} />
         <Route path="/flights/create" element={<CreateFlight />} />
         <Route path="/flight/edit" element={<EditFlight />} />
-        <Route path="/Home" element={<Home/>} />
         <Route path="/user/edit" element={<EditUserProfile/>} />
-
+        <Route path="/user/reservations" element={<DisplayReservations/>} />
       </Routes>
     </div>
   );

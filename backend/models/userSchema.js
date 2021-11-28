@@ -12,7 +12,7 @@ const userSchema = new Schema({
 
     },
     passportNumber: {
-        type: Number,
+        type: String,
         required: true,
         unique:true
     },
@@ -24,3 +24,4 @@ const userSchema = new Schema({
  { timestamps: true })
 const User = mongoose.model('User', userSchema);
 module.exports = User;
+

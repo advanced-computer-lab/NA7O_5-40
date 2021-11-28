@@ -65,6 +65,7 @@ router.post('/flight/create', async (req, res) => {
     }
 });
 
+
 router.get('/flight/delete/:id', async (req, res) => {
     console.log(req.params.id);
     Flight.findByIdAndDelete(req.params.id, function (err, deleteflight) {

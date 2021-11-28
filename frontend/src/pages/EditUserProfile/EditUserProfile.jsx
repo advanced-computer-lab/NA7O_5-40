@@ -4,21 +4,27 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 
 function EditUserProfile() {
-    useEffect(() => {
-        console.log(location.state)
-        setUserProfile(location.state);
+
+
+    const [Userr, setUserProfile] = useState({
+        firstName:'', lastName: '',passportNumber: '' , Email: ''
+     });
+     
+    useEffect(() => {    
+        axios.get("http://localhost:8000/User").then( (allUsers)=>{
+            setUserProfile(allUsers.data);
+            
+        })
     }, []);
 
-    let [Userr, setUserProfile] = useState({
-       firstName:'', lastName: '',passportNumber: 0 , Email: ''
-    });
+
+    
 
     async function formSubmit(e) {
         e.preventDefault();
 
         try {
-            await axios.post("http://localhost:8000/User/update", Userr);
-
+            await axios.post("http://localhost:8000/User/update", Userr)
             window.alert('User updated')
           
         }
@@ -50,7 +56,7 @@ function EditUserProfile() {
 
                 <div class="mb-3">
                     <label for="passportNumber" class="form-label">Passport Number</label>
-                    <input required='true' value={Userr.passportNumber} onChange={getUser} type="number" class="form-control" name="passportNumber" />
+                    <input required='true' value={Userr.passportNumber} onChange={getUser} type="text" class="form-control" name="passportNumber" />
                 </div>
 
                 <div class="mb-3">

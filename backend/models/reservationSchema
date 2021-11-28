@@ -1,0 +1,32 @@
+const mongoose=require('mongoose');
+const Schema=mongoose.Schema;
+
+
+const reservationSchema=new Schema({
+    userId:{
+        type:Number,
+        required:true
+    },
+    departureFlightId:{
+        type:String,
+        required:true
+    },
+    returnFlightId:{
+        type:String,
+        required:true
+    },
+    bookingNumber:{
+        type:Number,
+        required:true
+    },
+    chosenCabin:{
+        type:String,
+        required:true
+    },
+    chosenSeatNumber:{
+        type:String,
+        required:true
+    }}
+    , { timestamps: true });
+const Reservation = mongoose.model('Reservation', reservationSchema);
+module.exports = Reservation;

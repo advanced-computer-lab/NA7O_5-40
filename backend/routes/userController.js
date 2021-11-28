@@ -40,7 +40,7 @@ router.get('/:id',async(req,res)=>{
     
     router.get('/reservations/:id',async(req,res)=>{
         console.log(req.params.id);
-        Reservation.findById(req.params.id, function (err, reservation) {
+        Reservation.find({userId:req.params.id}, function (err, reservation) {
             if (!err) {
                 res.status(200).send(reservation)
             }

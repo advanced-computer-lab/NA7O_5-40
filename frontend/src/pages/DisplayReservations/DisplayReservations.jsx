@@ -24,8 +24,9 @@ export default function DisplayReservations() {
     const id = "61a4226a3a570728b6b0dfbf";
     Axios.get(`http://localhost:8000/user/reservations/${id}`)
       .then((response) => {
-        console.log(response.data);
+        
         setReservations(response.data);
+        console.log(reservations);
       })
       .catch((e) => {
         console.log(e);

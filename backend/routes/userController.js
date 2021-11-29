@@ -1,11 +1,11 @@
-const express = require('express');
-const Flight = require('../models/flightSchema');
-const User = require('../models/userSchema');
-const Reservation = require('../models/reservationSchema');
-const endOfDay = require('date-fns/endOfDay')
-const startOfDay = require('date-fns/startOfDay');
-const { parseISO } = require('date-fns');
-const { body, validationResult } = require('express-validator');
+const express = require("express");
+const Flight = require("../models/flightSchema");
+const User = require("../models/userSchema");
+const Reservation = require("../models/reservationSchema");
+const endOfDay = require("date-fns/endOfDay");
+const startOfDay = require("date-fns/startOfDay");
+const { parseISO } = require("date-fns");
+const { body, validationResult } = require("express-validator");
 
 const router = express.Router();
 
@@ -40,11 +40,18 @@ router.get("/:id", async (req, res) => {
   });
 });
 
-router.get("/reservations/:id", async (req, res) => {
-  console.log(req.params.id);
-  Reservation.find({ userId: req.params.id }, function (err, reservation) {
+router.get("/reservations/:id",async (req, res) => {
+  Reservation.find({ userId: req.params.id }, function (err, reservations) {
     if (!err) {
-      res.status(200).send(reservation);
+      reservations.forEach(async(reservation) => {
+       var departureFlight=await Flight.findById(reservation.departureFlightId);
+        var returnFlight=await Flight.findById(reservation.returnFlightId);
+        reservation._doc.departureFlight=departureFlight;
+        reservation._doc.returnFlight=returnFlight;
+        console.log(reservation);
+      });
+      //console.log(reservations);
+      res.status(200).send(reservations);
     } else {
       console.log(err);
       return res.status(400).send(err);
@@ -65,16 +72,29 @@ router.delete("/reservations/:id", async (req, res) => {
 });
 
 // create reservation
-router.post('/reservation/create', async (req, res) => {
-  console.log(req.body)
-  var { userId, departureFlightId, returnFlightId,
-    chosenCabinDeparture, chosenCabinReturn, seatNumbersDeparture,
-    seatNumbersReturn, adults, children } = req.body
+router.post("/reservation/create", async (req, res) => {
+  console.log(req.body);
+  var {
+    userId,
+    departureFlightId,
+    returnFlightId,
+    chosenCabinDeparture,
+    chosenCabinReturn,
+    seatNumbersDeparture,
+    seatNumbersReturn,
+    adults,
+    children,
+  } = req.body;
 
   var noOfSeats = adults + children;
 
-  if (noOfSeats != seatNumbersDeparture.length || noOfSeats != seatNumbersReturn.length)
-    return res.status(400).send('Entered seat numbers do not match required seats');
+  if (
+    noOfSeats != seatNumbersDeparture.length ||
+    noOfSeats != seatNumbersReturn.length
+  )
+    return res
+      .status(400)
+      .send("Entered seat numbers do not match required seats");
 
   var departureFlight = await Flight.findById(departureFlightId);
   var returnFlight = await Flight.findById(returnFlightId);
@@ -82,32 +102,38 @@ router.post('/reservation/create', async (req, res) => {
   var freeSeatsDep = departureFlight.freeSeats;
   var freeSeatsReturn = returnFlight.freeSeats;
 
-  freeSeatsDep = freeSeatsDep.filter((element) => !seatNumbersDeparture.includes(element));
-  freeSeatsReturn = freeSeatsReturn.filter((element) => !seatNumbersReturn.includes(element));
-
-  await Flight.findByIdAndUpdate(departureFlightId, { freeSeats: freeSeatsDep });
-  await Flight.findByIdAndUpdate(returnFlightId, { freeSeats: freeSeatsReturn });
-
-  const newReservation = new Reservation(
-    req.body
+  freeSeatsDep = freeSeatsDep.filter(
+    (element) => !seatNumbersDeparture.includes(element)
   );
+  freeSeatsReturn = freeSeatsReturn.filter(
+    (element) => !seatNumbersReturn.includes(element)
+  );
+
+  await Flight.findByIdAndUpdate(departureFlightId, {
+    freeSeats: freeSeatsDep,
+  });
+  await Flight.findByIdAndUpdate(returnFlightId, {
+    freeSeats: freeSeatsReturn,
+  });
+
+  const newReservation = new Reservation(req.body);
 
   try {
     await newReservation.save();
-    res.status(200).send('Reservation added successfully');
+    res.status(200).send("Reservation added successfully");
   } catch (e) {
     if (e.code === 11000) {
-      res.status(400).send('Reservation no already exists');
+      res.status(400).send("Reservation no already exists");
       return;
     }
 
     res.status(400).send(e.codeName);
   }
-})
+});
 
 // flight search
-router.post('/flights/search', async (req, res) => {
-  console.log(req.body)
+router.post("/flights/search", async (req, res) => {
+  console.log(req.body);
 
   var adults = req.body.adults;
   var children = req.body.children;
@@ -118,36 +144,32 @@ router.post('/flights/search', async (req, res) => {
 
   var noOfRequiredSeats = adults + children;
 
-  var candidateFlights = await Flight.find(
-    {
-      departureAirport: depAirport,
-      arrivalAirport: arrivalAirport,
-      departureDate: {
-        $gte: startOfDay(depDate),
-        $lte: endOfDay(depDate),
-      }
-    });
+  var candidateFlights = await Flight.find({
+    departureAirport: depAirport,
+    arrivalAirport: arrivalAirport,
+    departureDate: {
+      $gte: startOfDay(depDate),
+      $lte: endOfDay(depDate),
+    },
+  });
 
   // console.log(candidateFlights);
   var result = [];
-  candidateFlights.forEach(flight => {
+  candidateFlights.forEach((flight) => {
     var freeSeats = [];
 
-    if (cabinClass == 'economy') {
+    if (cabinClass == "economy") {
       freeSeats = flight.freeSeatsEconomy;
-    }
-    else
-      freeSeats = flight.freeSeatsBusiness;
+    } else freeSeats = flight.freeSeatsBusiness;
 
     console.log(freeSeats);
 
-    if (freeSeats.length >= noOfRequiredSeats)
-      result.push(flight);
+    if (freeSeats.length >= noOfRequiredSeats) result.push(flight);
   });
 
   res.status(200).send(result);
 
   res.status(400).send(e.codeName);
-})
+});
 
 module.exports = router;

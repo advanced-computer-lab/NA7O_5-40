@@ -14,7 +14,7 @@ function EditFlight() {
     }, []);
 
     let [flight, setFlight] = useState({
-        flightNo: 0, departureDate: '', arrivalDate: '', economySeats: 0,
+        flightNo: '', departureDate: '', arrivalDate: '', economySeats: 0,
         businessSeats: 0, arrivalAirport: '', departureAirport: ''
     });
 

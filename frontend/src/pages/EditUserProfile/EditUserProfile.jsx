@@ -1,30 +1,32 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import axios from "axios";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 
 function EditUserProfile() {
+    let [Userr, setUserProfile] = useState([]
 
-
-    const [Userr, setUserProfile] = useState({
-        firstName:'', lastName: '',passportNumber: '' , Email: ''
-     });
-     
+    );
+     const getUserFromBE = () => {
+        const id = "61a4226a3a570728b6b0dfbf";
+        axios.get(`http://localhost:8000/user/${id}`)
+          .then((response) => {
+            console.log(response.data);
+            setUserProfile(response.data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      };
     useEffect(() => {    
-        axios.get("http://localhost:8000/User").then( (allUsers)=>{
-            setUserProfile(allUsers.data);
-            
-        })
-    }, []);
-
-
+          getUserFromBE();
     
-
-    async function formSubmit(e) {
+    }, []);
+    async function formSubmit(e) { 
         e.preventDefault();
 
         try {
-            await axios.post("http://localhost:8000/User/update", Userr)
+            await axios.post("http://localhost:8000/user/update", Userr)
             window.alert('User updated')
           
         }
@@ -33,13 +35,13 @@ function EditUserProfile() {
             window.alert(err.response.data)
 
         }
-    }
-
+    }  
     function getUser(e) {
         let userr = { ... Userr};
        userr[e.target.name] = e.target.value;
         setUserProfile(userr);
     }
+
 
     return (
         <div >

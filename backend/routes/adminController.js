@@ -48,9 +48,29 @@ router.post('/flight/update', async (req, res) => {
 
 router.post('/flight/create', async (req, res) => {
     console.log(req.body)
+
+    var economySeatsNo = req.body.economySeats;
+    var businessSeatsNo = req.body.businessSeats;
+
+    freeSeats = [];
+
+    for (var i = 1; i <= businessSeatsNo; i++) {
+        freeSeats.push(`B${i}`);
+    }
+
+    for (var i = 1; i <= economySeatsNo; i++) {
+        freeSeats.push(`E${i}`);
+    }
+
+
     const newFlight = new Flight(
-        req.body
+        {
+            ...req.body,
+            freeSeats,
+        }
     );
+
+    console.log(newFlight);
 
     try {
         await newFlight.save();

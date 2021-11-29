@@ -2,8 +2,10 @@ const express = require('express');
 const Flight = require('../models/flightSchema');
 const User = require('../models/userSchema');
 const Reservation = require('../models/reservationSchema');
-const endOfDayfrom = require('date-fns/endOfDay')
+const endOfDay = require('date-fns/endOfDay')
 const startOfDay = require('date-fns/startOfDay');
+const { parseISO } = require('date-fns');
+const { body, validationResult } = require('express-validator');
 
 const router = express.Router();
 
@@ -53,8 +55,29 @@ router.get('/reservations/:id', async (req, res) => {
     });
 });
 
-router.post('/Reservation/create', async (req, res) => {
+router.post('/reservation/create', async (req, res) => {
     console.log(req.body)
+    var { userId, departureFlightId, returnFlightId,
+        chosenCabinDeparture, chosenCabinReturn, seatNumbersDeparture,
+        seatNumbersReturn, adults, children } = req.body
+
+    var noOfSeats = adults + children;
+
+    if (noOfSeats != seatNumbersDeparture.length || noOfSeats != seatNumbersReturn.length)
+        return res.status(400).send('Entered seat numbers do not match required seats');
+
+    var departureFlight = await Flight.findById(departureFlightId);
+    var returnFlight = await Flight.findById(returnFlightId);
+
+    var freeSeatsDep = departureFlight.freeSeats;
+    var freeSeatsReturn = returnFlight.freeSeats;
+
+    freeSeatsDep = freeSeatsDep.filter((element) => !seatNumbersDeparture.includes(element));
+    freeSeatsReturn = freeSeatsReturn.filter((element) => !seatNumbersReturn.includes(element));
+
+    await Flight.findByIdAndUpdate(departureFlightId, {freeSeats: freeSeatsDep});
+    await Flight.findByIdAndUpdate(returnFlightId, {freeSeats: freeSeatsReturn});
+
     const newReservation = new Reservation(
         req.body
     );
@@ -77,14 +100,14 @@ router.post('/flights/search', async (req, res) => {
 
     var adults = req.body.adults;
     var children = req.body.children;
-    var depAirport = req.body.depAirport;
+    var depAirport = req.body.departureAirport;
     var arrivalAirport = req.body.arrivalAirport;
-    var depDate = req.body.depDate;
+    var depDate = parseISO(req.body.departureDate);
     var cabinClass = req.body.cabinClass;
 
-    var noOfSeats = adults + children;
+    var noOfRequiredSeats = adults + children;
 
-    var candidateFlights = Flight.find(
+    var candidateFlights = await Flight.find(
         {
             departureAirport: depAirport,
             arrivalAirport: arrivalAirport,
@@ -94,6 +117,24 @@ router.post('/flights/search', async (req, res) => {
             }
         });
 
+    // console.log(candidateFlights);
+    var result = [];
+    candidateFlights.forEach(flight => {
+        var freeSeats = [];
+
+        if (cabinClass == 'economy') {
+            freeSeats = flight.freeSeatsEconomy;
+        }
+        else
+            freeSeats = flight.freeSeatsBusiness;
+
+        console.log(freeSeats);
+
+        if (freeSeats.length >= noOfRequiredSeats)
+            result.push(flight);
+    });
+
+    res.status(200).send(result);
 
 });
 

@@ -15,15 +15,19 @@ const reservationSchema = new Schema({
         type: String,
         required: true
     },
-    bookingNumber: {
-        type: Number,
-        required: true
-    },
-    chosenCabin: {
+    chosenCabinDeparture: {
         type: String,
         required: true
     },
-    seatNumbers: {
+    chosenCabinReturn: {
+        type: String,
+        required: true
+    },
+    seatNumbersDeparture: {
+        type: [String],
+        required: true
+    },
+    seatNumbersReturn: {
         type: [String],
         required: true
     },

@@ -26,7 +26,7 @@ function CreateFlight() {
         }
 
         catch (err) {
-            window.alert(err.response.data)
+            window.alert(err)
         }
     }
 

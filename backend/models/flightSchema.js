@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const flightSchema = new Schema({
-
     flightNo: {
         type: String,
         required: true,
@@ -35,30 +34,31 @@ const flightSchema = new Schema({
         required: true
     },
     departureTerminal: {
-        type: String,
-        required: true
+        type: Number,
+        // required: true
+        default: 1
     },
     arrivalTerminal: {
-        type: String,
-        required: true
+        type: Number,
+        // required: true
+        default: 1
     },
     economyPrice: {
         type: Number,
-        required: true
+        // required: true
+        default: 100
     },
     businessPrice: {
         type: Number,
-        required: true
+        // required: true
+        default: 200
     },
     baggageAllowance: {
         type: Number,
-        required: true
+        // required: true
+        default: 20
     },
-    freeSeatsEconomy: {
-        type: [String],
-        default: []
-    },
-    freeSeatsBusiness: {
+    freeSeats: {
         type: [String],
         default: []
     }

@@ -62,8 +62,8 @@ function EditUserProfile() {
                 </div>
 
                 <div class="mb-3">
-                    <label for="Email" class="form-label">Email</label>
-                    <input required='true' value={Userr.Email} onChange={getUser} type="text" class="form-control" name="Email" />
+                    <label for="email" class="form-label">Email</label>
+                    <input required='true' value={Userr.email} onChange={getUser} type="text" class="form-control" name="email" />
                 </div>
                 <button class="btn btn-primary mb-3">Update</button>
             </form>

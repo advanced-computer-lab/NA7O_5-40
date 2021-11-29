@@ -6,8 +6,10 @@ const endOfDay = require("date-fns/endOfDay");
 const startOfDay = require("date-fns/startOfDay");
 const { parseISO } = require("date-fns");
 const { body, validationResult } = require("express-validator");
+const sendMail = require('../helpers/sendMail');
 
 const router = express.Router();
+
 
 // edit profile
 router.post("/update", async (req, res) => {
@@ -40,14 +42,14 @@ router.get("/:id", async (req, res) => {
   });
 });
 
-router.get("/reservations/:id",async (req, res) => {
+router.get("/reservations/:id", async (req, res) => {
   Reservation.find({ userId: req.params.id }, function (err, reservations) {
     if (!err) {
-      reservations.forEach(async(reservation) => {
-       var departureFlight=await Flight.findById(reservation.departureFlightId);
-        var returnFlight=await Flight.findById(reservation.returnFlightId);
-        reservation._doc.departureFlight=departureFlight;
-        reservation._doc.returnFlight=returnFlight;
+      reservations.forEach(async (reservation) => {
+        var departureFlight = await Flight.findById(reservation.departureFlightId);
+        var returnFlight = await Flight.findById(reservation.returnFlightId);
+        reservation._doc.departureFlight = departureFlight;
+        reservation._doc.returnFlight = returnFlight;
         console.log(reservation);
       });
       //console.log(reservations);
@@ -60,14 +62,29 @@ router.get("/reservations/:id",async (req, res) => {
 });
 
 // delete reservation
-router.delete("/reservations/:id", async (req, res) => {
-  console.log("fss");
-  console.log(req.params.id);
+router.delete("/reservation/:id", async (req, res) => {
   try {
-    await Reservation.findByIdAndRemove(req.params.id).exec();
-    res.send("succesfully deleted!");
+    var deletedRes = await Reservation.findByIdAndRemove(req.params.id);
+    console.log(deletedRes);
+
+    if(deletedRes == null)
+      return res.status(400).send('No reservation with this id');
+
+    var userID = deletedRes.userId;
+
+    var user = await User.findById(userID);
+
+    var userEmail = user.email;
+
+    console.log(userEmail);
+
+    console.log(await sendMail(userEmail, 'Reservation cancelled', `Your reservation with booking number ${deletedRes._id} was cancelled recently.\nYou will be refunded with an amount of `));
+
+    res.status(200).send("succesfully deleted!");
   } catch (err) {
+    res.status(400).send(err.message);
     console.log(err);
+
   }
 });
 

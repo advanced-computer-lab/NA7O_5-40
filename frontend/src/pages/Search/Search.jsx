@@ -3,17 +3,17 @@ import { useLocation } from 'react-router';
 
 
 export default function Search() {
-    // console.log("Aloooooooooooooooooooo");
-    // console.log(data)
+    
     const location = useLocation();
 
-    
     return (
         // <div>
         //     {location.state.name}
         // </div>
         <>
-            <table class="table table-hover text-center w-75 m-auto py-3">
+
+            
+            <table className="table table-hover text-center w-75 m-auto py-3 mt-4">
                 <thead>
                     <th>Flight No</th>
                     <th>Departure Airport</th>

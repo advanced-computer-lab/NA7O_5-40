@@ -8,12 +8,16 @@ import EditFlight from './pages/EditFlight/EditFlight.jsx';
 import EditUserProfile from './pages/EditUserProfile/EditUserProfile';
 import DisplayReservations from './pages/DisplayReservations/DisplayReservations';
 import ChooseSeats from './pages/ChooseSeats/ChooseSeats';
+import Home from './pages/Home/Home';
+import Search from './pages/Search/Search';
 function App() {
   return (
     <div className="App">
 
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/home/search" element={<Search />} />
         <Route path="/flights" element={<DisplayFlights />} />
         <Route path="/flights/create" element={<CreateFlight />} />
         <Route path="/flight/edit" element={<EditFlight />} />

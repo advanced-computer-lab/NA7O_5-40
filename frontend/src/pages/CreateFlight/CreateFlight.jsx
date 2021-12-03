@@ -1,86 +1,145 @@
-import React, { useState } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react';
+import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 
-
 function CreateFlight() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    let [flight, setFlight] = useState({
-        flightNo: 0, departureDate: '', arrivalDate: '', economySeats: 0,
-        businessSeats: 0, arrivalAirport: '', departureAirport: ''
-    });
+  let [flight, setFlight] = useState({
+    flightNo: 0,
+    departureDate: '',
+    arrivalDate: '',
+    economySeats: 0,
+    businessSeats: 0,
+    arrivalAirport: '',
+    departureAirport: ''
+  });
 
-
-    async function formSubmit(e) {
-        e.preventDefault();
-        if(Date.parse(flight.arrivalDate) <= Date.parse(flight.departureDate)){
-            return window.alert('Arrival time cannot be before departure time')
-        }
-
-        try {
-            await axios.post("http://localhost:8000/admin/flight/create", flight);
-            
-            window.alert('Flight created')
-            navigate('/flights')
-        }
-
-        catch (err) {
-            window.alert(err)
-        }
+  async function formSubmit(e) {
+    e.preventDefault();
+    if (Date.parse(flight.arrivalDate) <= Date.parse(flight.departureDate)) {
+      return window.alert('Arrival time cannot be before departure time');
     }
 
-    function getFlight(e) {
-        let myFlight = { ...flight };
-        myFlight[e.target.name] = e.target.value;
-        setFlight(myFlight);
+    try {
+      await axios.post('http://localhost:8000/admin/flight/create', flight);
+
+      window.alert('Flight created');
+      navigate('/flights');
+    } catch (err) {
+      window.alert(err);
     }
+  }
 
-    return (
-        <div >
-            <form onSubmit={formSubmit}>
-                <div class="mb-3">
-                    <label  for="flightNo" class="form-label">Flight no</label>
-                    <input required  onChange={getFlight} type="text" class="form-control" name="flightNo" />
-                </div>
+  function getFlight(e) {
+    let myFlight = { ...flight };
+    myFlight[e.target.name] = e.target.value;
+    setFlight(myFlight);
+  }
 
-                <div class="mb-3">
-                    <label for="departureDate" class="form-label">Departure date and time</label>
-                    <input required='true'  onChange={getFlight} type="datetime-local" class="form-control" name="departureDate" />
-                </div>
+  return (
+    <div>
+      <div className='w-75 mx-auto py-4'>
+        <form onSubmit={formSubmit}>
 
-                <div class="mb-3">
-                    <label for="arrivalDate" class="form-label">Arrival date and time</label>
-                    <input required='true'  onChange={getFlight} type="datetime-local" class="form-control" name="arrivalDate" />
-                </div>
+          <div className="my-2">
+            <label htmlFor='flightNo'>
+              Flight no
+            </label>
+            <input
+              required
+              onChange={getFlight}
+              type='text'
+              className='form-control'
+              name='flightNo'
+            />
+          </div>
 
-                <div class="mb-3">
-                    <label for="economySeats" class="form-label">Economy Seats</label>
-                    <input required='true'  onChange={getFlight} type="number" class="form-control" name="economySeats" />
-                </div>
+          <div className="my-2">
+            <label htmlFor='departureDate' className='form-label'>
+              Departure date and time
+            </label>
+            <input
+              required='true'
+              onChange={getFlight}
+              type='datetime-local'
+              className='form-control'
+              name='departureDate'
+            />
+          </div>
 
-                <div class="mb-3">
-                    <label for="businessSeats" class="form-label">Business Seats</label>
-                    <input required  onChange={getFlight} type="number" class="form-control" name="businessSeats" />
-                </div>
+          <div className="my-2">
+            <label htmlFor='arrivalDate' className='form-label'>
+              Arrival date and time
+            </label>
+            <input
+              required='true'
+              onChange={getFlight}
+              type='datetime-local'
+              className='form-control'
+              name='arrivalDate'
+            />
+          </div>
 
-                <div class="mb-3">
-                    <label for="departureAirport" class="form-label">Departure Airport</label>
-                    <input required='true'  onChange={getFlight} type="text" class="form-control" name="departureAirport" />
-                </div>
+          <div className="my-2">
+            <label htmlFor='economySeats' className='form-label'>
+              Economy Seats
+            </label>
+            <input
+              required='true'
+              onChange={getFlight}
+              type='number'
+              className='form-control'
+              name='economySeats'
+            />
+          </div>
 
-                <div class="mb-3">
-                    <label for="arrivalAirport" class="form-label">Arrival Airport</label>
-                    <input required='true'  onChange={getFlight} type="text" class="form-control" name="arrivalAirport" />
-                </div>
+          <div className="my-2">
+            <label htmlFor='businessSeats' className='form-label'>
+              Business Seats
+            </label>
+            <input
+              required
+              onChange={getFlight}
+              type='number'
+              className='form-control'
+              name='businessSeats'
+            />
+          </div>
 
-                <button class="btn btn-primary mb-3" >Submit</button>
-            </form>
+          <div className="my-2">
+            <label htmlFor='departureAirport' className='form-label'>
+              Departure Airport
+            </label>
+            <input
+              required='true'
+              onChange={getFlight}
+              type='text'
+              className='form-control'
+              name='departureAirport'
+            />
+          </div>
 
-            <Link to="/flights">Back</Link>
-            <div style={{height: 30}} ></div>
-        </div>
-    )
+          <div className="my-2">
+            <label htmlFor='arrivalAirport' className='form-label'>
+              Arrival Airport
+            </label>
+            <input
+              required='true'
+              onChange={getFlight}
+              type='text'
+              className='form-control'
+              name='arrivalAirport'
+            />
+          </div>
+          <button type="submit" className='btn btn-primary mt-3'>Submit</button>
+        </form>
+
+        <Link to='/flights'>Back</Link>
+        <div style={{ height: 20 }}></div>
+      </div>
+    </div>
+  );
 }
 
-export default CreateFlight
+export default CreateFlight;

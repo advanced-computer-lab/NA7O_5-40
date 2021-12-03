@@ -4,7 +4,7 @@ const User = require("../models/userSchema");
 const Reservation = require("../models/reservationSchema");
 const endOfDay = require("date-fns/endOfDay");
 const startOfDay = require("date-fns/startOfDay");
-const { parseISO } = require("date-fns");
+const { parseISO, parse } = require("date-fns");
 const { body, validationResult } = require("express-validator");
 const sendMail = require("../helpers/sendMail");
 
@@ -197,21 +197,30 @@ router.post("/reservation/create", async (req, res) => {
   }
 });
 
+function checkFreeSeatsAvailable(cabin, flight, requiredSeats) {
+  var freeBuisinessSeats = flight.freeSeats.filter((seat) => seat.startsWith('B'));
+  var freeEconomySeats = flight.freeSeats.filter((seat) => seat.startsWith('E'));
+
+  var seats = cabin == 'economy' ? freeEconomySeats : freeBuisinessSeats;
+
+  if (seats.length >= requiredSeats)
+    return true;
+
+  return false;
+}
+
 // flight search
 router.post("/flights/search", async (req, res) => {
   console.log(req.body);
 
-  var adults = req.body.adults;
-  var children = req.body.children;
-  var depAirport = req.body.departureAirport;
-  var arrivalAirport = req.body.arrivalAirport;
+  var {adults, children, departureAirport, arrivalAirport, cabinClass} = req.body;
   var depDate = parseISO(req.body.departureDate);
-  var cabinClass = req.body.cabinClass;
+  var returnDate = parseISO(req.body.returnDate);
 
-  var noOfRequiredSeats = adults + children;
+  var noOfRequiredSeats = parseInt(adults) + parseInt(children);
 
-  var candidateFlights = await Flight.find({
-    departureAirport: depAirport,
+  var candidateDepFlights = await Flight.find({
+    departureAirport: departureAirport,
     arrivalAirport: arrivalAirport,
     departureDate: {
       $gte: startOfDay(depDate),
@@ -219,23 +228,40 @@ router.post("/flights/search", async (req, res) => {
     },
   });
 
-  // console.log(candidateFlights);
-  var result = [];
-  candidateFlights.forEach((flight) => {
-    var freeSeats = [];
-
-    if (cabinClass == "economy") {
-      freeSeats = flight.freeSeatsEconomy;
-    } else freeSeats = flight.freeSeatsBusiness;
-
-    console.log(freeSeats);
-
-    if (freeSeats.length >= noOfRequiredSeats) result.push(flight);
+  var candidateReturnFlights = await Flight.find({
+    departureAirport: arrivalAirport,
+    arrivalAirport: departureAirport,
+    departureDate: {
+      $gte: startOfDay(returnDate),
+      $lte: endOfDay(returnDate),
+    },
   });
 
-  res.status(200).send(result);
+  // console.log(candidateFlights);
+  var departureFlights = [];
+  var returnFlights = [];
 
-  res.status(400).send(e.codeName);
+  candidateDepFlights.forEach((flight) => {
+    if (checkFreeSeatsAvailable(cabinClass, flight, noOfRequiredSeats))
+      departureFlights.push(flight);
+
+  });
+
+  candidateReturnFlights.forEach((flight) => {
+    if (checkFreeSeatsAvailable(cabinClass, flight, noOfRequiredSeats))
+      returnFlights.push(flight);
+  });
+
+  if(returnFlights.length == 0 || departureFlights.length == 0)
+    return res.status(400).send('No flights found matching your criteria');
+
+  // console.log(result);
+  res.status(200).send({
+    departureFlights,
+    returnFlights
+  });
+
+  // res.status(400).send(e.codeName);
 });
 
 module.exports = router;

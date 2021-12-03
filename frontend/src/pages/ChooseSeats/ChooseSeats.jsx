@@ -1,28 +1,39 @@
 import * as React from "react";
 import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router';
+import { UserContext } from "../../Context";
 
 export default function ChoosenSeats() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { chosenReturnFlight, chosenDepartureFlight, searchCriteria } = useContext(UserContext)
+
   const [choosenSeat, setChoosenSet] = useState([]);
+
+  function getCabinSeats() {}
+
   useEffect(() => {
     //get seats from departure flights
     //axios.get().....
     let choosenSeat = ["1A", "1B", "2D", "4E"];
     console.log("departure flight seats : " + choosenSeat);
 
-    setChoosenSet(choosenSeat);
+    var cabinClass= searchCriteria.cabinClass;
+    console.log(cabinClass)
+    setChoosenSet( chosenDepartureFlight.freeSeats);
   }, []);
+
   //seatsselected is the array which we put in the selected seats of the departure flight
   let seatsselected = [];
   const selectShortlistedApplicant = (e, row) => {

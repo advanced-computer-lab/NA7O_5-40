@@ -14,6 +14,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendMail = async (emailAddress, subject, message) => {
+    
     try {
         let info = await transporter.sendMail({
             from: 'flightguc@hotmail.com', // sender address
@@ -23,11 +24,13 @@ const sendMail = async (emailAddress, subject, message) => {
             // html: "<b>Hello world?</b>", // html body
         });
 
-        console.log("Message sent: %s", info.messageId);
+        
         return 'message sent';
         
     } catch (e) {
+       
         return e.message;
+        
     }
 }
 module.exports = sendMail;

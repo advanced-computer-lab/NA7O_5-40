@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {useNavigate}  from 'react-router-dom';
 import { DataGrid } from "@mui/x-data-grid";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -19,7 +20,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 export default function DisplayReservations() {
   const [reservations, setReservations] = useState([]);
-
+  const navigate = useNavigate();
   const getReservationsFromBE = () => {
     const id = "61a4226a3a570728b6b0dfbf";
     Axios.get(`http://localhost:8000/user/reservations/${id}`)
@@ -33,10 +34,14 @@ export default function DisplayReservations() {
       });
   };
   const deletereservation = (id) => {
-    axios.delete(`http://localhost:8000/user/reservations/${id}`).then(() => {
+    axios.delete(`http://localhost:8000/user/reservation/${id}`).then(() => {
       console.log(id);
       window.location.reload(false);
     });
+  };
+  const showReservation=(reservation)=>{
+    var id=reservation._id;
+      navigate(`/user/showReservation/${id}`);
   };
   useEffect(() => {
     getReservationsFromBE();
@@ -57,9 +62,7 @@ export default function DisplayReservations() {
           <TableRow>
             <TableCell allign="left"> Departure Flight</TableCell>
             <TableCell align="left">Return Flight</TableCell>
-            <TableCell align="left">Booking no.</TableCell>
-            <TableCell align="left">Cabin no.</TableCell>
-            <TableCell align="left">Seat no.</TableCell>
+            <TableCell align="left">Booking no.</TableCell>          
             <TableCell align="left">Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -72,9 +75,10 @@ export default function DisplayReservations() {
                 {reservation.departureFlightId}
               </TableCell>
               <TableCell align="left">{reservation.returnFlightId}</TableCell>
-              <TableCell align="left">{reservation.bookingNumber}</TableCell>
+              <TableCell align="left">{reservation._id}</TableCell>
               <TableCell align="left">{reservation.chosenCabin}</TableCell>
               <TableCell align="left">{reservation.chosenSeatNumber}</TableCell>
+              <TableCell allign="left"><Button variant="outlined" onClick={()=>{showReservation(reservation)}}>Show Reservation</Button> </TableCell>
               <TableCell align="left">
                 <Button
                   variant="outlined"

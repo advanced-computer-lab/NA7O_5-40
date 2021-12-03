@@ -6,10 +6,9 @@ const endOfDay = require("date-fns/endOfDay");
 const startOfDay = require("date-fns/startOfDay");
 const { parseISO } = require("date-fns");
 const { body, validationResult } = require("express-validator");
-const sendMail = require('../helpers/sendMail');
+const sendMail = require("../helpers/sendMail");
 
 const router = express.Router();
-
 
 // edit profile
 router.post("/update", async (req, res) => {
@@ -41,12 +40,37 @@ router.get("/:id", async (req, res) => {
     }
   });
 });
+//get flight with flight ID
+router.get("/flight/:id", async (req, res) => {
+  try {
+    var flight = await Flight.findById(req.params.id);
+    res.status(200).send(flight)
+    console.log(flight);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err);
+  }
+});
+
+//get reservation with reservation ID
+router.get("/reservation/:id", async (req, res) => {
+  try {
+    var reservation = await Reservation.findById(req.params.id);
+    res.status(200).send(reservation)
+    console.log(reservation);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err);
+  }
+});
 
 router.get("/reservations/:id", async (req, res) => {
   Reservation.find({ userId: req.params.id }, function (err, reservations) {
     if (!err) {
       reservations.forEach(async (reservation) => {
-        var departureFlight = await Flight.findById(reservation.departureFlightId);
+        var departureFlight = await Flight.findById(
+          reservation.departureFlightId
+        );
         var returnFlight = await Flight.findById(reservation.returnFlightId);
         reservation._doc.departureFlight = departureFlight;
         reservation._doc.returnFlight = returnFlight;
@@ -67,8 +91,8 @@ router.delete("/reservation/:id", async (req, res) => {
     var deletedRes = await Reservation.findByIdAndRemove(req.params.id);
     console.log(deletedRes);
 
-    if(deletedRes == null)
-      return res.status(400).send('No reservation with this id');
+    if (deletedRes == null)
+      return res.status(400).send("No reservation with this id");
 
     var userID = deletedRes.userId;
 
@@ -78,13 +102,18 @@ router.delete("/reservation/:id", async (req, res) => {
 
     console.log(userEmail);
 
-    console.log(await sendMail(userEmail, 'Reservation cancelled', `Your reservation with booking number ${deletedRes._id} was cancelled recently.\nYou will be refunded with an amount of `));
+    console.log(
+      await sendMail(
+        userEmail,
+        "Reservation cancelled",
+        `Your reservation with booking number ${deletedRes._id} was cancelled recently.\nYou will be refunded with an amount of `
+      )
+    );
 
     res.status(200).send("succesfully deleted!");
   } catch (err) {
     res.status(400).send(err.message);
     console.log(err);
-
   }
 });
 
@@ -132,9 +161,29 @@ router.post("/reservation/create", async (req, res) => {
   await Flight.findByIdAndUpdate(returnFlightId, {
     freeSeats: freeSeatsReturn,
   });
+  if (chosenCabinDeparture == "economy") {
+    var departurePrice =
+      adults * departureFlight.economyPrice +
+      0.5 * (children * departureFlight.economyPrice);
+  } else {
+    var departurePrice =
+      adults * departureFlight.businessPrice +
+      0.5 * (children * departureFlight.businessPrice);
+  }
+  if (chosenCabinReturn == "economy") {
+    var returnPrice =
+      adults * returnFlight.economyPrice +
+      0.5 * (children * returnFlight.economyPrice);
+  } else {
+    var returnPrice =
+      adults * returnFlight.businessPrice +
+      0.5 * (children * returnFlight.businessPrice);
+  }
 
-  const newReservation = new Reservation(req.body);
+  var price = departurePrice + returnPrice;
 
+  const newReservation = new Reservation({ ...req.body, price });
+  console.log(newReservation);
   try {
     await newReservation.save();
     res.status(200).send("Reservation added successfully");

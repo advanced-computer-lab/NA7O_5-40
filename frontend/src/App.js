@@ -8,6 +8,7 @@ import EditFlight from './pages/EditFlight/EditFlight.jsx';
 import EditUserProfile from './pages/EditUserProfile/EditUserProfile';
 import DisplayReservations from './pages/DisplayReservations/DisplayReservations';
 import ChooseSeats from './pages/ChooseSeats/ChooseSeats';
+import ShowReservation from './pages/ShowReservation/ShowReservation';
 function App() {
   return (
     <div className="App">
@@ -19,6 +20,7 @@ function App() {
         <Route path="/flight/edit" element={<EditFlight />} />
         <Route path="/user/edit" element={<EditUserProfile/>} />
         <Route path="/user/reservations" element={<DisplayReservations/>} />
+        <Route path="/user/showReservation/:id" element={<ShowReservation/>} />
         <Route path="/user/chooseSeats" element={<ChooseSeats/>} />
       </Routes>
     </div>

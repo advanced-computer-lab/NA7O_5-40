@@ -1,31 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
+import { UserContext } from "../../Context";
 
-export default function Search(a, b, c, d) {
+export default function Search() {
 
+    const { departureFlights, returnFlights, setChosenDepartureFlight, setChosenReturnFlight } = useContext(UserContext)
 
     const navigate = useNavigate();
     const location = useLocation();
-    let cabin = location.state.cabinClass
-    let depFlights = [...location.state.departureFlights]
-    let retFlights = [...location.state.returnFlights]
+
+    // let cabin = location.state.cabinClass
+    // let depFlights = [...location.state.departureFlights]
+    // let retFlights = [...location.state.returnFlights]
+
+    useEffect(() => {
+        console.log(returnFlights)
+        if (departureFlights == null || returnFlights == null)
+            navigate('/home');
+
+    }, []);
 
     let [chosenDeparture, setChosenDeparture] = useState(null);
     let [chosenReturn, setChosenReturn] = useState(null);
 
     const chooseDeparture = (event) => {
-        console.log(event.target.value)
-        setChosenDeparture(event.target.value);
+        // console.log(event.target.value)
+        var flightID = event.target.value;
+
+        var flight = departureFlights.filter((element) => element._id == flightID)[0];
+        console.log(flight)
+        setChosenDepartureFlight(flight);
+        setChosenDeparture(flight);
     }
 
     const chooseReturn = (event) => {
-        console.log(event.target.value)
-        setChosenReturn(event.target.value);
+        // console.log(event.target.value)
+        var flightID = event.target.value;
+
+        var flight = returnFlights.filter((element) => element._id == flightID)[0];
+        // console.log(flight)
+        setChosenReturn(flight);
+        setChosenReturnFlight(flight);
     }
 
     // navigate("/home/search/flightDetails", { state: { flight, depFlights, retFlights, cabin } }); }}
     return (
+        departureFlights != null &&
+        returnFlights != null &&
         <>
 
             <button onClick={() => { navigate("/home") }} type="submit" className='btn btn-primary mt-4 mb-4 py-2 px-5 rounded-pill'>Back</button>
@@ -48,10 +70,10 @@ export default function Search(a, b, c, d) {
                 <tbody>
 
 
-                    {location.state.departureFlights.map((flight, key) => {
+                    {departureFlights.map((flight, key) => {
 
                         return <tr key={key} >
-                            <input type='radio' name='departure' value={flight.flightNo} onChange={chooseDeparture}></input>
+                            <input type='radio' name='departure' value={flight._id} onChange={chooseDeparture}></input>
 
                             <td >{flight.flightNo}</td>
                             <td >{flight.departureAirport}</td>
@@ -81,10 +103,10 @@ export default function Search(a, b, c, d) {
                 </thead>
 
                 <tbody>
-                    {location.state.returnFlights.map((flight, key) => {
+                    {returnFlights.map((flight, key) => {
 
                         return <tr key={key} >
-                            <input type='radio' name='arrival' value={flight.flightNo} onChange={chooseReturn}></input>
+                            <input type='radio' name='arrival' value={flight._id} onChange={chooseReturn}></input>
 
                             <td >{flight.flightNo}</td>
                             <td >{flight.departureAirport}</td>
@@ -97,11 +119,12 @@ export default function Search(a, b, c, d) {
 
             </table>
 
-            <button className= 'btn btn-primary mt-4 mb-4 py-2 px-5 rounded-pill' onClick={() => {
-                if(chosenDeparture == null || chosenReturn == null)
+            <button className='btn btn-primary mt-4 mb-4 py-2 px-5 rounded-pill' onClick={() => {
+                if (chosenDeparture == null || chosenReturn == null)
                     return alert('Choose departure and return flights');
 
-                
+                navigate("/user/chooseseats");
+
             }}>Continue</button>
 
 

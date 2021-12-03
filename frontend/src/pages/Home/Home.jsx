@@ -1,10 +1,12 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from "../../Context";
 
 export default function Home() {
 
   const navigate = useNavigate();
+  const {setSearchCriteria, setReturnFlights, setDepartureFlights} = useContext(UserContext)
 
   // use State for Departure and Arrival Flights
   let [flight, setFlight] = useState({
@@ -27,14 +29,22 @@ export default function Home() {
   // Function to call the api and contains the submit logic
   async function formSubmit(e) {
     e.preventDefault();
+    
     try {
 
-      let {cabinClass} = flight
+      // let {cabinClass} = flight
       let { data } = await axios.post('http://localhost:8000/user/flights/search', flight);
       let { departureFlights, returnFlights } = data
 
+
+   
       if (departureFlights.length > 0 && returnFlights.length > 0) {
-        navigate('/home/search', { state: { departureFlights, returnFlights, cabinClass } });
+        setSearchCriteria(flight);
+        setDepartureFlights(departureFlights);
+        setReturnFlights(returnFlights)
+        // navigate('/home/search', { state: { departureFlights, returnFlights, cabinClass } });
+        navigate('/home/search');
+
       }
 
     } catch (err) {

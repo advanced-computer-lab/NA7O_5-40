@@ -1,101 +1,42 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Search from '../Search/Search';
 
 export default function Home() {
 
   const navigate = useNavigate();
 
-  // use State for Departure Flight
-  let [flightDep, setFlightDep] = useState({
+  // use State for Departure and Arrival Flights
+  let [flight, setFlight] = useState({
     adults: 1,
     children: 0,
     departureAirport: '',
     arrivalAirport: '',
     departureDate: '',
+    arrivalDate: '',
     cabinClass: ''
   });
 
-  // use State for Return Flight
-  let [flightRet, setFlightRet] = useState({
-    adults: 1,
-    children: 0,
-    departureAirport: '',
-    arrivalAirport: '',
-    departureDate: '',
-    cabinClass: ''
-  });
-
-  // Get Departure Flight
-  function getFlightDep(e) {
-    let myDepFlight = { ...flightDep };
-    myDepFlight[e.target.name] = e.target.value;
-    setFlightDep(myDepFlight);
+  // Function to setState the flight 
+  function getFlight(e) {
+    let myFlight = { ...flight };
+    myFlight[e.target.name] = e.target.value;
+    setFlight(myFlight);
   }
 
-  // Get Return Flight
-  function getFlighRet(e) {
-    let myRetFlight = { ...flightRet };
-    myRetFlight[e.target.name] = e.target.value;
-    setFlightRet(myRetFlight);
-  }
-
-  // Get the Return Departure Airport 
-  function getRetDepAir(e) {
-    let myRetFlight = { ...flightRet };
-    myRetFlight.departureAirport = e.target.value;
-    setFlightRet(myRetFlight);
-  }
-
-  // Get the Return Arrival airport 
-  function getRetArrAir(e) {
-    let myRetFlight = { ...flightRet };
-    myRetFlight.arrivalAirport = e.target.value;
-    setFlightRet(myRetFlight);
-  }
-
-  // Get the Return Date
-  function getRetDate(e) {
-    let myRetFlight = { ...flightRet };
-    myRetFlight.departureDate = e.target.value;
-    setFlightRet(myRetFlight);
-  }
-
-  // Form Submit for Departure Flights
-  async function formSubmitDep(e) {
+  // Function to call the api and contains the submit logic
+  async function formSubmit(e) {
     e.preventDefault();
     try {
 
-      let { data } = await axios.post('http://localhost:8000/user/flights/search', flightDep);
-      
-      if (data.length > 0) {
-        navigate('/home/search', { state: { data } });
-      }
-      else {
-        window.alert("No Flights Avaiable !");
-      }
-    } catch (err) {
-      window.alert(err);
-    }
-  }
+      let {cabinClass} = flight
+      let { data } = await axios.post('http://localhost:8000/user/flights/search', flight);
+      let { departureFlights, returnFlights } = data
 
-
-  // Form Submit for Return Flights
-  async function formSubmitRet(e) {
-    e.preventDefault();
-    try {
-
-      console.log(flightRet);
-      let { data } = await axios.post('http://localhost:8000/user/flights/search', flightRet);
-
-      console.log(data);
-      if (data.length > 0) {
-        navigate('/home/search', { state: { data } });
+      if (departureFlights.length > 0 && returnFlights.length > 0) {
+        navigate('/home/search', { state: { departureFlights, returnFlights, cabinClass } });
       }
-      else {
-        window.alert("No Return Flights Avaiable !");
-      }
+
     } catch (err) {
       window.alert(err);
     }
@@ -112,17 +53,17 @@ export default function Home() {
             <label htmlFor='adults' className="form-label">
               Adults
             </label>
-            <input onChange={(e) => { getFlightDep(e); getFlighRet(e) }} required type='number' className='form-control' name='adults' />
+            <input onChange={getFlight} required type='number' className='form-control' name='adults' />
           </div>
 
           <div className="my-3">
             <label htmlFor='children' className="form-label"> Children </label>
-            <input onChange={(e) => { getFlightDep(e); getFlighRet(e) }} required type='number' className='form-control' name='children' />
+            <input onChange={getFlight} required type='number' className='form-control' name='children' />
           </div>
 
           <div className="my-3">
             <label htmlFor='departureAirport' className='form-label'> Departure Airport </label>
-            <input onChange={(e) => { getFlightDep(e); getRetArrAir(e) }} required='true' type='text' className='form-control' name='departureAirport' />
+            <input onChange={getFlight} required='true' type='text' className='form-control' name='departureAirport' />
           </div>
 
           <div className="my-3">
@@ -130,7 +71,7 @@ export default function Home() {
               Arrival Airport
             </label>
             <input
-              onChange={(e) => { getFlightDep(e); getRetDepAir(e) }}
+              onChange={getFlight}
               required='true'
               type='text'
               className='form-control'
@@ -143,7 +84,7 @@ export default function Home() {
               Departure Date
             </label>
             <input
-              onChange={getFlightDep}
+              onChange={getFlight}
               required='true'
               type='date'
               className='form-control'
@@ -156,7 +97,7 @@ export default function Home() {
               Return Date
             </label>
             <input
-              onChange={getRetDate}
+              onChange={getFlight}
               required='true'
               type='date'
               className='form-control'
@@ -169,7 +110,7 @@ export default function Home() {
               Cabin Class
             </label>
             <input
-              onChange={(e) => { getFlightDep(e); getFlighRet(e) }}
+              onChange={getFlight}
               required='true'
               type='text'
               className='form-control'
@@ -177,10 +118,7 @@ export default function Home() {
             />
           </div>
 
-
-          <button onClick={formSubmitRet} type="submit" className='btn btn-primary mt-3 p-3 rounded-pill me-5'>Show Return Flights</button>
-
-          <button onClick={formSubmitDep} type="submit" className='btn btn-primary mt-3 p-3 rounded-pill ms-5'>Show Departure Flights</button>
+          <button onClick={formSubmit} type="submit" className='btn btn-primary mt-3 py-3 px-4 rounded-pill'>Show Flights</button>
 
         </form>
 

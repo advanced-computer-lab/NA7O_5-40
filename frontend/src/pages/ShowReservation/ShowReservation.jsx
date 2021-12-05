@@ -73,6 +73,8 @@ export default function ShowReservation() {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell allign="left">Flight No</TableCell>
+
               <TableCell allign="left">Departure Date</TableCell>
               <TableCell allign="left">Departure Airport</TableCell>
               <TableCell allign="left">Arrival Date</TableCell>
@@ -85,6 +87,8 @@ export default function ShowReservation() {
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
+              <TableCell align="left">{depFlight.flightNo}</TableCell>
+
               <TableCell align="left">{depFlight.departureDate}</TableCell>
               <TableCell align="left">{depFlight.departureAirport}</TableCell>
               <TableCell align="left">{depFlight.arrivalDate}</TableCell>
@@ -104,6 +108,8 @@ export default function ShowReservation() {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell allign="left">Flight No</TableCell>
+
               <TableCell allign="left">Departure Date</TableCell>
               <TableCell allign="left">Departure Airport</TableCell>
               <TableCell allign="left">Arrival Date</TableCell>
@@ -116,6 +122,8 @@ export default function ShowReservation() {
             <TableRow
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
+              <TableCell align="left">{returnFlight.flightNo}</TableCell>
+
               <TableCell align="left">{returnFlight.departureDate}</TableCell>
               <TableCell align="left">
                 {returnFlight.departureAirport}

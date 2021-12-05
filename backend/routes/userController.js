@@ -89,7 +89,21 @@ router.get("/reservations/:id", async (req, res) => {
 router.delete("/reservation/:id", async (req, res) => {
   try {
     var deletedRes = await Reservation.findByIdAndRemove(req.params.id);
-    console.log(deletedRes);
+
+    // var departureFlightId = deletedRes.departureFlightId;
+    // var returnFlightId = deletedRes.returnFlightId;
+    // var chosenSeatsDeparture = deletedRes.seatNumbersDeparture;
+    // var chosenSeatsReturn = deletedRes.seatNumbersReturn;
+
+    // var departureFlight = await Flight.findById(departureFlightId);
+    // var returnFlight = await Flight.findById(returnFlightId);
+
+    // var updatedFreeSeatsDep = [...departureFlight.freeSeats, ...chosenSeatsDeparture].sort();
+    // var updatedFreeSeatsRet = [...returnFlight.freeSeats, ...chosenSeatsReturn].sort();
+
+    // await Flight.findByIdAndUpdate(departureFlightId, { 'freeSeats': updatedFreeSeatsDep });
+    // await Flight.findByIdAndUpdate(returnFlightId, { 'freeSeats': updatedFreeSeatsRet });
+
 
     if (deletedRes == null)
       return res.status(400).send("No reservation with this id");

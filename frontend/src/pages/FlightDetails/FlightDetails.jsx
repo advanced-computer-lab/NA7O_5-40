@@ -8,14 +8,11 @@ export default function FlightDetails() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    let departureFlights = [...location.state.depFlights]
-    let returnFlights = [...location.state.retFlights]
-    let cabinClass = location.state.cabin
 
     return (
 
         <>
-            <button onClick={() => { navigate("/home/search", { state: { departureFlights, returnFlights, cabinClass} }); }} type="submit" className='btn btn-primary mt-4 mb-4 py-2 px-5 rounded-pill'>Back</button>
+            <button onClick={() => { navigate("/home/search"); }} type="submit" className='btn btn-primary mt-4 mb-4 py-2 px-5 rounded-pill'>Back</button>
 
             <div className="w-25 m-auto">
                 <h4 className="my-4 border border-2 border-secondary rounded-pill py-2">Flight Details</h4>
@@ -31,7 +28,7 @@ export default function FlightDetails() {
                     <th>Economy Price</th>
                     <th>Business Price</th>
                     <th>Baggage Allowance</th>
-                    <th>Cabin Class</th>
+                    {/* <th>Cabin Class</th> */}
                 </thead>
 
                 <tbody>
@@ -46,7 +43,7 @@ export default function FlightDetails() {
                         <td >{location.state.flight.economyPrice}</td>
                         <td >{location.state.flight.businessPrice}</td>
                         <td >{location.state.flight.baggageAllowance}</td>
-                        <td >{location.state.cabin}</td>
+                        {/* <td >{location.state.cabin}</td> */}
                     </tr>
 
                 </tbody>

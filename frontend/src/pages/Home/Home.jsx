@@ -2,11 +2,11 @@ import axios from 'axios';
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from "../../Context";
-
+import NavBar from './NavBar'
 export default function Home() {
 
   const navigate = useNavigate();
-  const {setSearchCriteria, setReturnFlights, setDepartureFlights} = useContext(UserContext)
+  const { setSearchCriteria, setReturnFlights, setDepartureFlights, searchCriteria } = useContext(UserContext)
 
   // use State for Departure and Arrival Flights
   let [flight, setFlight] = useState({
@@ -15,8 +15,8 @@ export default function Home() {
     departureAirport: '',
     arrivalAirport: '',
     departureDate: '',
-    arrivalDate: '',
-    cabinClass: ''
+    cabinClass: 'economy'
+
   });
 
   // Function to setState the flight 
@@ -24,36 +24,40 @@ export default function Home() {
     let myFlight = { ...flight };
     myFlight[e.target.name] = e.target.value;
     setFlight(myFlight);
+    console.log(myFlight);
   }
 
   // Function to call the api and contains the submit logic
   async function formSubmit(e) {
     e.preventDefault();
-    
+
     try {
 
-      // let {cabinClass} = flight
+      
       let { data } = await axios.post('http://localhost:8000/user/flights/search', flight);
       let { departureFlights, returnFlights } = data
 
 
-   
+
       if (departureFlights.length > 0 && returnFlights.length > 0) {
         setSearchCriteria(flight);
+        console.log(searchCriteria);
         setDepartureFlights(departureFlights);
         setReturnFlights(returnFlights)
         // navigate('/home/search', { state: { departureFlights, returnFlights, cabinClass } });
         navigate('/home/search');
 
-      }
+      } 
 
     } catch (err) {
-      window.alert(err);
+      console.log(err.response);
+      window.alert(err.response.data);
     }
   }
 
   return (
     <div>
+      <NavBar />
       <div className='w-75 mx-auto py-4'>
 
         <form>
@@ -119,16 +123,25 @@ export default function Home() {
             <label htmlFor='cabinClass' className='form-label'>
               Cabin Class
             </label>
-            <input
+
+
+            <select onChange={getFlight} className='form-control' name="cabinClass">
+              <option value="economy">Economy</option>
+              <option value="business">Business</option>
+
+            </select>
+
+            {/* <input
+
               onChange={getFlight}
               required='true'
-              type='text'
+              type=''
               className='form-control'
               name='cabinClass'
-            />
+            /> */}
           </div>
 
-          <button onClick={formSubmit} type="submit" className='btn btn-primary mt-3 py-3 px-4 rounded-pill'>Show Flights</button>
+          <button onClick={formSubmit} type="submit" className='btn btn-primary mt-3 py-3 px-4 rounded-pill'>Search</button>
 
         </form>
 

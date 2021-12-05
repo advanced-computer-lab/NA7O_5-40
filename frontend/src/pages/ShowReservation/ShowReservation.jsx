@@ -9,18 +9,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Axios from "axios";
-import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "axios";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, Link } from "react-router-dom";
 
 export default function ShowReservation() {
   const search = useLocation().search;
@@ -30,7 +22,7 @@ export default function ShowReservation() {
   const [reservation, setReservation] = useState(null);
 
   const getFlightsFromBE = () => {
-    var name=id.id;
+    var name = id.id;
     console.log(name);
     Axios.get(`http://localhost:8000/user/reservation/${name}`)
       .then((response) => {
@@ -70,8 +62,14 @@ export default function ShowReservation() {
     <CircularProgress />
   ) : (
     <div>
+      <Link to="/user/reservations">Show all reservations</Link>
+
+      <br />
+      <br />
+
+
       Departure Flight
-      <TableContainer component={Paper}>
+      < TableContainer component={Paper} >
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -95,14 +93,14 @@ export default function ShowReservation() {
                 {reservation.chosenCabinDeparture}
               </TableCell>
               <TableCell align="left">
-                {reservation.seatNumbersDeparture.map((seatNumber)=>(<li>{seatNumber}</li>))}
+                {reservation.seatNumbersDeparture.map((seatNumber) => (<li>{seatNumber}</li>))}
               </TableCell>
             </TableRow>
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer >
       Return Flight
-      <TableContainer component={Paper}>
+      < TableContainer component={Paper} >
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -128,13 +126,13 @@ export default function ShowReservation() {
                 {reservation.chosenCabinDeparture}
               </TableCell>
               <TableCell align="left">
-                {reservation.seatNumbersReturn.map((seatNumber)=>(<li>{seatNumber}</li>))}
+                {reservation.seatNumbersReturn.map((seatNumber) => (<li>{seatNumber}</li>))}
               </TableCell>
             </TableRow>
           </TableBody>
         </Table>
-      </TableContainer>
-      price:{reservation.price}
-    </div>
+      </TableContainer >
+      price: {reservation.price}
+    </div >
   );
 }

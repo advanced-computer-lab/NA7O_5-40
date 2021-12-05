@@ -17,75 +17,91 @@ export default function ChoosenSeats() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { chosenReturnFlight, chosenDepartureFlight, searchCriteria } = useContext(UserContext)
+  const { chosenReturnFlight, chosenDepartureFlight,
+    searchCriteria, chosenSeatsDeparture, chosenSeatsReturn,
+    setChosenSeatsDeparture,
+    setChosenSeatsReturn
+  } = useContext(UserContext)
 
-  const [choosenSeat, setChoosenSet] = useState([]);
 
-  function getCabinSeats() {}
+  const [freeSeatsDeparture, setFreeSeatsDeparture] = useState([]);
+  const [freeSeatsReturn, setFreeSeatsReturn] = useState([]);
+
+  const [requiredSeats, setRequiredSeats] = useState(0);
+
+  const [noChosenDeparture, setNoChosenDeparture] = useState(0);
+  const [noChosenReturn, setNoChosenReturn] = useState(0);
+
+
+  function getFreeCabinSeats(freeSeats, chosenCabin) {
+    if (chosenCabin == 'economy')
+      return freeSeats.filter((seat) => seat.startsWith('E'));
+    else
+      return freeSeats.filter((seat) => seat.startsWith('B'));
+
+  }
+
+  function getFreeCabinSeats(freeSeats, chosenCabin) {
+    if (chosenCabin == 'economy')
+      return freeSeats.filter((seat) => seat.startsWith('E'));
+    else
+      return freeSeats.filter((seat) => seat.startsWith('B'));
+  }
+
+
 
   useEffect(() => {
     //get seats from departure flights
     //axios.get().....
-    let choosenSeat = ["1A", "1B", "2D", "4E"];
-    console.log("departure flight seats : " + choosenSeat);
 
-    var cabinClass= searchCriteria.cabinClass;
-    console.log(cabinClass)
-    setChoosenSet( chosenDepartureFlight.freeSeats);
+    if (searchCriteria == null)
+      return navigate('/home')
+
+    console.log(searchCriteria);
+    var cabinClass = searchCriteria.cabinClass;
+
+    setRequiredSeats(parseInt(searchCriteria.children) + parseInt(searchCriteria.adults));
+
+    setFreeSeatsDeparture(getFreeCabinSeats(chosenDepartureFlight.freeSeats, cabinClass))
+    setFreeSeatsReturn(getFreeCabinSeats(chosenReturnFlight.freeSeats, cabinClass))
+
   }, []);
 
-  //seatsselected is the array which we put in the selected seats of the departure flight
-  let seatsselected = [];
-  const selectShortlistedApplicant = (e, row) => {
-    const checked = e.target.checked;
-    if (checked) {
-      //console.log("row: " + row);
-      seatsselected.push(row);
-      console.log("seatsselected for departure flights: " + seatsselected);
-    }
-  };
-  //removechoosenseats is a method which removes the seats selected
-  const removechoosenseats = () => {
-    seatsselected.map(function (val, index) {
-      //remove every seat selected
-      //axios.delete()...
-      choosenSeat.splice(choosenSeat.indexOf(val), 1);
-    });
-    console.log("seats for departure flights after removing:" + choosenSeat);
-    //window.location.reload(false);
-  };
 
-  const [choosenSeat1, setChoosenSet1] = useState([]);
-  useEffect(() => {
-    //get seats from return flights
-    //axios.get().....
-    let choosenSeat1 = ["2A", "2B", "3D", "3E"];
-    console.log("return flight seats : " + choosenSeat1);
-    setChoosenSet1(choosenSeat1);
-  }, []);
-  //seatsselected2 is the array which we put in the selected seats of the return flight
-  let seatsselected2 = [];
-  const selectShortlistedApplicant2 = (e, row) => {
-    const checked = e.target.checked;
-    if (checked) {
-      seatsselected2.push(row);
-      console.log("seatsselected2 for return flights: " + seatsselected2);
-    }
-  };
-  //removechoosenseats is a method which removes the seats selected from return flights
-  const removechoosenseats2 = () => {
-    seatsselected2.map(function (val, index) {
-      //remove every seat selected
-      //axios.delete()...
-      choosenSeat1.splice(choosenSeat1.indexOf(val), 1);
-    });
-    console.log("seats for return flights after removing:" + choosenSeat1);
-    //window.location.reload(false);
-  };
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    searchCriteria &&
+    <Box sx={{ flexGrow: 5 }} style={{ padding: '20px 50px' }}
+    >
+      <Button
+        style={{ marginRight: "20px" }}
+        variant="outlined"
+        onClick={() => {
+
+          navigate('/home/search')
+        }}
+      >
+        Back
+      </Button>
+
+      <Button
+        variant="contained"
+        onClick={() => {
+          if (noChosenDeparture != requiredSeats || noChosenReturn != requiredSeats)
+            alert('Chosen seats do not match your required no of seats')
+          else {
+            navigate('/reservation/summary')
+          }
+        }}
+      >
+        Confirm
+      </Button>
+      <br />
+      <br />
+
       <Grid container spacing={10}>
-        <Grid item xs={5}>
+
+        <Grid item xs={4}>
           <h1
             style={{
               display: "flex",
@@ -95,7 +111,7 @@ export default function ChoosenSeats() {
               fontSize: "1.5rem",
             }}
           >
-            Departure Flight:
+            Departure Flight: {chosenDepartureFlight.flightNo}
           </h1>
           <br />
           <h2
@@ -107,18 +123,18 @@ export default function ChoosenSeats() {
               fontSize: "1.5rem",
             }}
           >
-            Chosen Cabin:
+            Chosen Cabin: {searchCriteria.cabinClass}
           </h2>
           <br />
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 100 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Choose your Seat(s)</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>Choose your Seat(s) </TableCell>
+                  <TableCell>{noChosenDeparture}/{requiredSeats}</TableCell>
                 </TableRow>
               </TableHead>
-              {choosenSeat.map((row) => (
+              {freeSeatsDeparture.map((row) => (
                 <TableRow
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
@@ -126,8 +142,24 @@ export default function ChoosenSeats() {
                   <TableCell>
                     <input
                       type="checkbox"
-                      onClick={(e) => {
-                        selectShortlistedApplicant(e, row);
+                      value={row}
+                      onChange={(e) => {
+
+
+                        if (e.target.checked) {
+                          var x = chosenSeatsDeparture
+                          x.push(e.target.value)
+
+                          setChosenSeatsDeparture(x);
+                          setNoChosenDeparture(noChosenDeparture + 1)
+                        }
+                        else {
+                          setChosenSeatsDeparture(chosenSeatsDeparture.filter(element => element != e.target.value))
+                          setNoChosenDeparture(noChosenDeparture - 1)
+
+                        }
+
+                        console.log(chosenSeatsDeparture);
                       }}
                     />
                   </TableCell>
@@ -136,16 +168,9 @@ export default function ChoosenSeats() {
             </Table>
           </TableContainer>
           <br />
-          <Button
-            variant="contained"
-            onClick={() => {
-              removechoosenseats();
-            }}
-          >
-            Confirm
-          </Button>
+
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={4}>
           <h1
             style={{
               display: "flex",
@@ -155,7 +180,7 @@ export default function ChoosenSeats() {
               fontSize: "1.5rem",
             }}
           >
-            Return Flight:
+            Return Flight: {chosenReturnFlight.flightNo}
           </h1>
           <br />
           <h2
@@ -167,7 +192,7 @@ export default function ChoosenSeats() {
               fontSize: "1.5rem",
             }}
           >
-            Chosen Cabin:
+            Chosen Cabin: {searchCriteria.cabinClass}
           </h2>
           <br />
           <TableContainer component={Paper}>
@@ -175,10 +200,10 @@ export default function ChoosenSeats() {
               <TableHead>
                 <TableRow>
                   <TableCell>Choose your Seat(s)</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>{noChosenReturn}/{requiredSeats}</TableCell>
                 </TableRow>
               </TableHead>
-              {choosenSeat1.map((row) => (
+              {freeSeatsReturn.map((row) => (
                 <TableRow
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
@@ -186,8 +211,22 @@ export default function ChoosenSeats() {
                   <TableCell>
                     <input
                       type="checkbox"
-                      onClick={(e) => {
-                        selectShortlistedApplicant2(e, row);
+                      value={row}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          var x = chosenSeatsReturn
+                          x.push(e.target.value)
+
+                          setChosenSeatsReturn(x);
+                          setNoChosenReturn(noChosenReturn + 1)
+                        }
+                        else {
+                          setNoChosenReturn(noChosenReturn - 1)
+
+                          setChosenSeatsReturn(chosenSeatsReturn.filter(element => element != e.target.value))
+                        }
+
+                        console.log(chosenSeatsReturn);
                       }}
                     />
                   </TableCell>
@@ -196,15 +235,9 @@ export default function ChoosenSeats() {
             </Table>
           </TableContainer>
           <br />
-          <Button
-            variant="contained"
-            onClick={() => {
-              removechoosenseats2();
-            }}
-          >
-            Confirm
-          </Button>
+
         </Grid>
+
       </Grid>
     </Box>
   );

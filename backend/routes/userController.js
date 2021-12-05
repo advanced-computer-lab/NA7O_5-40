@@ -102,13 +102,13 @@ router.delete("/reservation/:id", async (req, res) => {
 
     console.log(userEmail);
 
-    console.log(
-      await sendMail(
-        userEmail,
-        "Reservation cancelled",
-        `Your reservation with booking number ${deletedRes._id} was cancelled recently.\nYou will be refunded with an amount of `
-      )
-    );
+
+    sendMail(
+      userEmail,
+      "Reservation cancelled",
+      `Your reservation with booking number ${deletedRes._id} was cancelled recently.\nYou will be refunded with an amount of `
+    )
+
 
     res.status(200).send("succesfully deleted!");
   } catch (err) {
@@ -132,7 +132,7 @@ router.post("/reservation/create", async (req, res) => {
     children,
   } = req.body;
 
-  var noOfSeats = adults + children;
+  var noOfSeats = parseInt(adults) + parseInt(children);
 
   if (
     noOfSeats != seatNumbersDeparture.length ||
@@ -161,6 +161,7 @@ router.post("/reservation/create", async (req, res) => {
   await Flight.findByIdAndUpdate(returnFlightId, {
     freeSeats: freeSeatsReturn,
   });
+
   if (chosenCabinDeparture == "economy") {
     var departurePrice =
       adults * departureFlight.economyPrice +
@@ -181,6 +182,7 @@ router.post("/reservation/create", async (req, res) => {
   }
 
   var price = departurePrice + returnPrice;
+  console.log(price);
 
   const newReservation = new Reservation({ ...req.body, price });
   console.log(newReservation);
@@ -193,7 +195,7 @@ router.post("/reservation/create", async (req, res) => {
       return;
     }
 
-    res.status(400).send(e.codeName);
+    res.status(400).send(e.message);
   }
 });
 
@@ -213,7 +215,7 @@ function checkFreeSeatsAvailable(cabin, flight, requiredSeats) {
 router.post("/flights/search", async (req, res) => {
   console.log(req.body);
 
-  var {adults, children, departureAirport, arrivalAirport, cabinClass} = req.body;
+  var { adults, children, departureAirport, arrivalAirport, cabinClass } = req.body;
   var depDate = parseISO(req.body.departureDate);
   var returnDate = parseISO(req.body.returnDate);
 
@@ -252,7 +254,7 @@ router.post("/flights/search", async (req, res) => {
       returnFlights.push(flight);
   });
 
-  if(returnFlights.length == 0 || departureFlights.length == 0)
+  if (returnFlights.length == 0 || departureFlights.length == 0)
     return res.status(400).send('No flights found matching your criteria');
 
   // console.log(result);

@@ -20,7 +20,6 @@ function EditUserProfile() {
       };
     useEffect(() => {    
           getUserFromBE();
-    
     }, []);
     async function formSubmit(e) { 
         e.preventDefault();

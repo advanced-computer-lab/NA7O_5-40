@@ -10,7 +10,8 @@ export const UserProvider = ({ children }) => {
   const [returnFlights, setReturnFlights] = useState(null);
   const [chosenDepartureFlight, setChosenDepartureFlight] = useState(null);
   const [chosenReturnFlight, setChosenReturnFlight] = useState(null);
-
+  const [chosenSeatsDeparture, setChosenSeatsDeparture] = useState([]);
+  const [chosenSeatsReturn, setChosenSeatsReturn] = useState([]);
 
   return (
     <UserContext.Provider
@@ -24,7 +25,11 @@ export const UserProvider = ({ children }) => {
         chosenDepartureFlight,
         setChosenDepartureFlight,
         chosenReturnFlight,
-        setChosenReturnFlight
+        setChosenReturnFlight,
+        chosenSeatsDeparture,
+        setChosenSeatsDeparture,
+        chosenSeatsReturn, 
+        setChosenSeatsReturn
       }}
     >
       {children}

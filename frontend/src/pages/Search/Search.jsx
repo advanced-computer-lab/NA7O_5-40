@@ -64,6 +64,8 @@ export default function Search() {
                     <th>Arrival Airport</th>
                     <th>Departure Date</th>
                     <th>Arrival Date</th>
+                    <th></th>
+
                 </thead>
 
 
@@ -80,6 +82,7 @@ export default function Search() {
                             <td >{flight.arrivalAirport}</td>
                             <td >{flight.departureDate}</td>
                             <td >{flight.arrivalDate}</td>
+                            <td><button  onClick={() => { navigate("/home/search/flightDetails", { state: { flight } }); }} className='btn btn-primary'>Details</button></td>
                         </tr>
                     })}
 
@@ -113,6 +116,8 @@ export default function Search() {
                             <td >{flight.arrivalAirport}</td>
                             <td >{flight.departureDate}</td>
                             <td >{flight.arrivalDate}</td>
+                            <td><button  onClick={() => { navigate("/home/search/flightDetails", { state: { flight } }); }} className='btn btn-primary'>Details</button></td>
+
                         </tr>
                     })}
                 </tbody>

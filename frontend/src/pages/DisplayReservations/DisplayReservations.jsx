@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useNavigate}  from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { DataGrid } from "@mui/x-data-grid";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -18,6 +18,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { Link } from "react-router-dom";
+
+
 export default function DisplayReservations() {
   const [reservations, setReservations] = useState([]);
   const navigate = useNavigate();
@@ -25,7 +28,7 @@ export default function DisplayReservations() {
     const id = "61a4226a3a570728b6b0dfbf";
     Axios.get(`http://localhost:8000/user/reservations/${id}`)
       .then((response) => {
-        
+
         setReservations(response.data);
         console.log(reservations);
       })
@@ -39,9 +42,9 @@ export default function DisplayReservations() {
       window.location.reload(false);
     });
   };
-  const showReservation=(reservation)=>{
-    var id=reservation._id;
-      navigate(`/user/showReservation/${id}`);
+  const showReservation = (reservation) => {
+    var id = reservation._id;
+    navigate(`/user/showReservation/${id}`);
   };
   useEffect(() => {
     getReservationsFromBE();
@@ -57,12 +60,14 @@ export default function DisplayReservations() {
 
   return (
     <TableContainer component={Paper}>
+      <Link to="/home">Home</Link>
+
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell allign="left"> Departure Flight</TableCell>
             <TableCell align="left">Return Flight</TableCell>
-            <TableCell align="left">Booking no.</TableCell>          
+            <TableCell align="left">Booking no.</TableCell>
             <TableCell align="left">Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -78,7 +83,7 @@ export default function DisplayReservations() {
               <TableCell align="left">{reservation._id}</TableCell>
               <TableCell align="left">{reservation.chosenCabin}</TableCell>
               <TableCell align="left">{reservation.chosenSeatNumber}</TableCell>
-              <TableCell allign="left"><Button variant="outlined" onClick={()=>{showReservation(reservation)}}>Show Reservation</Button> </TableCell>
+              <TableCell allign="left"><Button variant="outlined" onClick={() => { showReservation(reservation) }}>Show Reservation</Button> </TableCell>
               <TableCell align="left">
                 <Button
                   variant="outlined"

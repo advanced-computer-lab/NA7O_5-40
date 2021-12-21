@@ -27,6 +27,38 @@ router.post("/update", async (req, res) => {
     res.status(200).send("User updated");
   });
 });
+//change seats needs:departure or return flight,new seats,id of reservation
+router.post("/changeSeats", async (req, res) => {
+
+  if (req.body.selectedFlight == "departure flight") {
+    Reservation.findByIdAndUpdate(req.body._id, { seatNumbersDeparture: req.body.newSeats }, function (err, newUser) {
+      if (err) {
+        res.status(400).send("error");
+      }
+      res.status(200).send("Seat Numbers Updated!");
+    })
+  }
+  else {
+    Reservation.findByIdAndUpdate(req.body._id, { seatNumbersReturn: req.body.newSeats }, function (err, newUser) {
+      if (err) {
+        res.status(400).send("error");
+      }
+      res.status(200).send("Seat Numbers Updated!");
+    })
+
+  }
+})
+//free seats in flight
+router.get("/availableSeats/:id", async (req, res) => {
+  try {
+    var flight = await Flight.findById(req.params.id);
+    res.status(200).send(flight.freeSeats);
+  }
+  catch {
+    return res.status(400).send("unsuccessful");
+  }
+})
+
 
 // get user
 router.get("/:id", async (req, res) => {

@@ -13,6 +13,7 @@ import Home from './pages/Home/Home';
 import Search from './pages/Search/Search';
 import FlightDetails from './pages/FlightDetails/FlightDetails';
 import ShowSummary from './pages/ShowSummary/ShowSummary';
+import SignUp from './pages/Signup/Signup';
 
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<SignUp/>} />
+
         <Route path="/home" element={<Home />} />
         <Route path="/home/search" element={<Search />} />
         <Route path="/home/search/flightDetails" element={<FlightDetails />} />

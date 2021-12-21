@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require('bcrypt')
 const Flight = require("../models/flightSchema");
 const User = require("../models/userSchema");
 const Reservation = require("../models/reservationSchema");
@@ -9,6 +10,46 @@ const { body, validationResult } = require("express-validator");
 const sendMail = require("../helpers/sendMail");
 
 const router = express.Router();
+
+
+router.post('/update-password', async (req, res) => {
+  const { id } = req.payload;
+  const { oldPassword, newPassword } = req.body;
+
+  var dbUser = await User.findById(id);
+
+  if (!oldPassword || !newPassword) {
+    return res.status(400).send('Enter old and new password');
+  }
+
+  if (dbUser.length == 0) {
+    return res.status(400).send('User not found, please register first');
+  }
+
+
+  bcrypt.compare(oldPassword, dbUser.password, function (err, result) {
+    if (err) {
+      return res.status(500).send('An error occured');
+    }
+
+    if (result) {
+      bcrypt.genSalt(10, function (err, salt) {
+        bcrypt.hash(newPassword, salt, async function (err, hash) {
+          if (err) {
+            return res.status(500).send('An error occured');
+          }
+
+          await User.findByIdAndUpdate(id, { 'password': hash });
+
+          res.status(200).send('Password updated successfully');
+        });
+      });
+    } else {
+      res.status(400).send('The password you entered is invalid');
+    }
+  });
+});
+
 
 // edit profile
 router.post("/update", async (req, res) => {
@@ -30,7 +71,7 @@ router.post("/update", async (req, res) => {
 
 // get user
 router.get("/:id", async (req, res) => {
-  console.log(req.params.id);
+  // console.log(req.payload);
   User.findById(req.params.id, function (err, user) {
     if (!err) {
       res.status(200).send(user);

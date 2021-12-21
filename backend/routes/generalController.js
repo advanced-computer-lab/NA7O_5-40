@@ -1,33 +1,76 @@
 const express = require('express');
 const Admin = require('../models/adminSchema');
+const User = require('../models/userSchema');
 
 const router = express.Router();
 
-router.post('/login', async (req, res) => {
-    var username = req.body.username;
-    var password = req.body.password;
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
+var jwtSecret = process.env.JWTSECRET;
+
+
+router.post('/register', (req, res) => {
     console.log(req.body);
 
-    try {
-        // check if there is an admin with this username
-        var admin = await Admin.findOne({ username: username });
+    const { firstName, lastName, address, email, phoneNumbers, passportNumber, password } = req.body;
 
-        if (admin) {
+    bcrypt.genSalt(10, function (err, salt) {
+        bcrypt.hash(password, salt, async function (err, hash) {
+            const newUser = new User({
+                ...req.body,
+                password: hash
+            })
 
-            // if found, check if password is matching
-            if (admin.password == password) {
-                return res.status(200).send('Logged in');
-            }
-        }
+            await newUser.save();
 
-        res.status(400).send('Wrong username or password');
-
-
-    } catch (e) {
-        res.send('An error occured');
-    }
+            res.status(200).send('Registered successfully');
+        });
+    });
 });
 
+router.post('/login', async (req, res) => {
+    // console.log(req.headers.authorization);
 
+    const { email, password } = req.body;
+
+    var isAdmin = false;
+
+    var dbUser = await Admin.find({ email: email });
+
+    if (dbUser.length != 0)
+        isAdmin = true;
+
+
+    if (!isAdmin) {
+        dbUser = await User.find({ email: email });
+
+        if (dbUser.length == 0) {
+            return res.status(400).send('User not found, please register first');
+        }
+    }
+
+    bcrypt.compare(password, dbUser[0].password, function (err, result) {
+        // console.log(result)
+        if (result) {
+
+            const jwtToken = jwt.sign(
+                {
+                    'email': email,
+                    'isAdmin': isAdmin,
+                    'id': dbUser[0]._id
+                }
+                , jwtSecret
+            );
+
+            res.status(200).send({
+                'message': `Logged in as ${isAdmin ? 'admin' : 'user'}`,
+                'token': jwtToken
+            });
+        } else {
+            res.status(400).send('Invalid password');
+        }
+    });
+});
 
 module.exports = router;

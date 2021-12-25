@@ -417,7 +417,7 @@ function checkFreeSeatsAvailable(cabin, flight, requiredSeats) {
 router.post("/flights/search", async (req, res) => {
   console.log(req.body);
 
-  var { adults, children, departureAirport, arrivalAirport, cabinClass } = req.body;
+  var { adults, children, departureAirport, returnAirport, cabinClass } = req.body;
 
 
 
@@ -432,16 +432,15 @@ var depDate = new Date(req.body.departureDate)
 
   var candidateDepFlights = await Flight.find({
     departureAirport: departureAirport,
-    arrivalAirport: arrivalAirport,
+    arrivalAirport: returnAirport,
     departureDate: {
       $gte: startOfDay(depDate),
       $lte: endOfDay(depDate),
     },
   });
-  console.log(candidateDepFlights);
 
   var candidateReturnFlights = await Flight.find({
-    departureAirport: arrivalAirport,
+    departureAirport: returnAirport,
     arrivalAirport: departureAirport,
     departureDate: {
       $gte: startOfDay(returnDate),

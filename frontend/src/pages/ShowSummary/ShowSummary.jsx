@@ -9,13 +9,17 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 
-import Axios from "axios";
+// import Axios from "axios";
+import axios from '../../axios'
 import CircularProgress from "@mui/material/CircularProgress";
-import { UserContext } from "../../Context";
+import { UserContext, useAuthContext, useAppContext } from "../../Context";
 
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 
 export default function ShowSummary() {
+  const { isLoggedIn } = useAuthContext();
+  const { createNotification } = useAppContext();
+
   const navigate = useNavigate();
 
   const [totalPrice, setTotalPrice] = useState(0);
@@ -135,7 +139,6 @@ export default function ShowSummary() {
         onClick={async () => {
           console.log(searchCriteria);
           var reservation = {
-            'userId': '61a4226a3a570728b6b0dfbf',
             'departureFlightId': chosenDepartureFlight._id,
             'returnFlightId': chosenReturnFlight._id,
             'chosenCabinDeparture': searchCriteria.cabinClass,
@@ -147,8 +150,23 @@ export default function ShowSummary() {
           }
 
           try {
-            await Axios.post('http://localhost:8000/user/reservation/create', reservation);
-            navigate('/user/reservations');
+ 
+            if(!isLoggedIn){
+              return createNotification('You need to login to be able to reserve', 'warning')
+            }
+
+            var req = await axios.post('/user/checkout', {
+              amount: totalPrice
+            });
+
+            localStorage.setItem('reservation', JSON.stringify(reservation));
+
+            console.log(req.data);
+            window.location.href = req.data.url
+
+
+            // await axios.post('http://localhost:8000/user/reservation/create', reservation);
+            // navigate('/user/reservations');
           }
           catch (e) {
             alert(e.response.data);

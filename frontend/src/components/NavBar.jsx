@@ -13,11 +13,14 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useAppContext, useAuthContext } from "../Context";
 
 // const pages = ['Reservations'];
 // const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const NavBar = () => {
+  const { setIsLoggedIn, isLoggedIn } = useAuthContext();
+
   const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -80,6 +83,9 @@ const NavBar = () => {
                 display: { xs: "block", md: "none" },
               }}
             >
+              <MenuItem key={"Home"}>
+                <Link to="/home">Home</Link>
+              </MenuItem>
               <MenuItem key={"reservations"}>
                 <Link to="/user/reservations">Reservation</Link>
               </MenuItem>
@@ -95,22 +101,78 @@ const NavBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Button
-              key="reservations"
+              key="home"
               onClick={() => {
-                navigate("/user/reservations");
+                navigate("/home");
               }}
               sx={{ my: 2, color: "white", display: "block" }}
             >
-              Reservations
+              Home
             </Button>
+
+            {
+              isLoggedIn ? (
+                <Button
+                  key="profile"
+                  onClick={() => {
+                    navigate("/user/edit");
+                  }}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  Profile
+                </Button>
+              ) : (
+                <></>
+              )
+            }
+
+            {
+              isLoggedIn ?
+                (
+                  <Button
+                    key="reservations"
+                    onClick={() => {
+                      navigate("/user/reservations");
+                    }}
+                    sx={{ my: 2, color: "white", display: "block" }}
+                  >
+                    Reservations
+                  </Button>
+                ) :
+                (<></>)
+            }
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
+
+
+            {isLoggedIn ?
+              (
+                <Button
+                  onClick={() => {
+                    setIsLoggedIn(false);
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('userData')
+                    navigate("/");
+                  }}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  Logout
+                </Button>
+              )
+              :
+              <Button
+                onClick={() => {
+                  setIsLoggedIn(false);
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('userData')
+                  navigate("/");
+                }}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                Login
+              </Button>
+            }
             <Menu
               sx={{ mt: "45px" }}
               id="menu-appbar"

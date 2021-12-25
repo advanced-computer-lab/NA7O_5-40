@@ -22,6 +22,9 @@ import { useAuthContext } from "./Context";
 import NavBar from "./components/NavBar";
 import ProtectedRouteUser from "./routes/ProtectedRouteUser";
 import ProtectedRouteAdmin from "./routes/ProtectedRouteAdmin";
+import ReserveFlight from "./pages/ReserveFlight/ReserveFlight";
+import Cancel from "./pages/Cancel/Cancel";
+import ChangeSeats from './pages/ChangeSeats/ChangeSeats'
 
 function App() {
   const { isLoggedIn } = useAuthContext();
@@ -61,9 +64,20 @@ function App() {
             <Route exact path="/flight/edit" element={<EditFlight />} />
           </Route>
 
+          <Route exact path="/user/reserveFlight" element={<ProtectedRouteUser />}>
+            <Route exact path="/user/reserveFlight" element={<ReserveFlight />} />
+          </Route>
+
+          <Route exact path="/user/cancel" element={<ProtectedRouteUser />}>
+            <Route exact path="/user/cancel" element={<Cancel />} />
+          </Route>
 
           <Route exact path="/user/edit" element={<ProtectedRouteUser />}>
             <Route exact path="/user/edit" element={<EditUserProfile />} />
+          </Route >
+
+          <Route exact path="/user/changeSeats/:id" element={<ProtectedRouteUser />}>
+            <Route exact path="/user/changeSeats/:id" element={<ChangeSeats />} />
           </Route >
 
           <Route exact path="/user/reservations" element={<ProtectedRouteUser />}>

@@ -8,9 +8,39 @@ const startOfDay = require("date-fns/startOfDay");
 const { parseISO, parse } = require("date-fns");
 const { body, validationResult } = require("express-validator");
 const sendMail = require("../helpers/sendMail");
+const stripe = require('stripe')(process.env.STRIPEKEY);
 
 const router = express.Router();
 
+
+
+router.post('/checkout', async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      success_url: 'http://localhost:3000/user/reserveFlight',
+      cancel_url: 'http://localhost:3000/user/cancel',
+      mode: 'payment',
+      payment_method_types: ['card'],
+      line_items: [{
+        name: "Flight Reservation",
+        amount: req.body.amount * 100,
+        currency: "USD",
+        quantity: 1
+      }],
+    });
+
+    res.json({
+      status: true,
+      url: session.url
+    })
+  } catch (e) {
+    console.log(e);
+    res.json({
+      status: false,
+      error: e
+    })
+  }
+})
 
 router.post('/update-password', async (req, res) => {
   const { id } = req.payload;
@@ -54,6 +84,8 @@ router.post('/update-password', async (req, res) => {
 // edit profile
 router.post("/update", async (req, res) => {
   console.log(req.body);
+  req.body._id = req.payload.id;
+  console.log(req.payload.id)
   User.findByIdAndUpdate(req.body._id, req.body, function (err, newUser) {
     if (err) {
       //duplicate key error
@@ -215,9 +247,9 @@ router.post("/changeFlight", async (req, res) => {
 })
 
 // get user
-router.get("/:id", async (req, res) => {
-  // console.log(req.payload);
-  User.findById(req.params.id, function (err, user) {
+router.get("/", async (req, res) => {
+  // console.log(req.payload.id
+  User.findById(req.payload.id, function (err, user) {
     if (!err) {
       res.status(200).send(user);
     } else {
@@ -334,6 +366,9 @@ router.post("/reservation/create", async (req, res) => {
     children,
   } = req.body;
 
+
+  req.body.userId = req.payload.id;
+
   var noOfSeats = parseInt(adults) + parseInt(children);
 
   if (
@@ -421,7 +456,7 @@ router.post("/flights/search", async (req, res) => {
 
 
 
-var depDate = new Date(req.body.departureDate)
+  var depDate = new Date(req.body.departureDate)
   var returnDate = new Date(req.body.returnDate);
 
   console.log(depDate);

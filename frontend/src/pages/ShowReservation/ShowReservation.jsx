@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState,useContext } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,17 +8,43 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Axios from "axios";
-
+import Button from "@mui/material/Button";
+import { UserContext } from "../../Context";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { useLocation, useParams, Link } from "react-router-dom";
+import { useLocation, useParams,useNavigate, Link } from "react-router-dom";
 
 export default function ShowReservation() {
+  const navigate = useNavigate();
   const search = useLocation().search;
   const id = useParams();
   const [depFlight, setDepFlight] = useState([]);
   const [returnFlight, setReturnFlight] = useState([]);
-  const [reservation, setReservation] = useState(null);
+  const {reservation,setReservation,setFlightType,setCabinClass,cabinclass}= useContext(UserContext);
+
+  const changeSeatsDeparture = (flight) => {
+    var id = flight._id;
+    setFlightType("departure");
+    setCabinClass(reservation.chosenCabinDeparture); 
+    navigate(`/user/changeSeats/${id}`);
+  };
+  const changeSeatsReturn = (flight) => {
+    var id = flight._id;
+    setFlightType("return");
+    setCabinClass(reservation.chosenCabinReturn);
+    navigate(`/user/changeSeats/${id}`);
+  };
+  const changeFlightDeparture = (flight) => {
+    var id = flight._id;
+    setFlightType("departure");  
+    navigate(`/user/changeFlight/${id}`);
+  };
+
+  const changeFlightReturn = (flight) => {
+    var id = flight._id;
+    setFlightType("return");  
+    navigate(`/user/changeFlight/${id}`);
+  };
 
   const getFlightsFromBE = () => {
     var name = id.id;
@@ -81,6 +106,7 @@ export default function ShowReservation() {
               <TableCell allign="left">Arrival Airport</TableCell>
               <TableCell allign="left">Departure Cabin</TableCell>
               <TableCell allign="left">Departure Seat No.</TableCell>
+              <TableCell allign="left">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -99,6 +125,12 @@ export default function ShowReservation() {
               <TableCell align="left">
                 {reservation.seatNumbersDeparture.map((seatNumber) => (<li>{seatNumber}</li>))}
               </TableCell>
+              <TableCell align="left">
+              <Button variant="outlined" onClick={() => {changeSeatsDeparture(depFlight)}}>Change Seats</Button>
+              </TableCell>
+              <TableCell align="left">
+              <Button variant="outlined" onClick={() => {changeSeatsDeparture(depFlight)}}>Change Flight</Button>
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -116,6 +148,7 @@ export default function ShowReservation() {
               <TableCell allign="left">Arrival Airport</TableCell>
               <TableCell allign="left">Departure Cabin</TableCell>
               <TableCell allign="left">Departure Seat No.</TableCell>
+              <TableCell allign="left">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -131,10 +164,16 @@ export default function ShowReservation() {
               <TableCell align="left">{returnFlight.arrivalDate}</TableCell>
               <TableCell align="left">{returnFlight.arrivalAirport}</TableCell>
               <TableCell align="left">
-                {reservation.chosenCabinDeparture}
+                {reservation.chosenCabinReturn}
               </TableCell>
               <TableCell align="left">
                 {reservation.seatNumbersReturn.map((seatNumber) => (<li>{seatNumber}</li>))}
+              </TableCell>
+              <TableCell align="left">
+              <Button variant="outlined" onClick={() => {changeSeatsReturn(returnFlight)}}>Change Seats</Button>
+              </TableCell>
+              <TableCell align="left">
+              <Button variant="outlined" onClick={() => {changeSeatsDeparture(depFlight)}}>Change Flight</Button>
               </TableCell>
             </TableRow>
           </TableBody>

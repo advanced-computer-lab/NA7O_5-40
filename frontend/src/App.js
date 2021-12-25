@@ -13,6 +13,10 @@ import Home from './pages/Home/Home';
 import Search from './pages/Search/Search';
 import FlightDetails from './pages/FlightDetails/FlightDetails';
 import ShowSummary from './pages/ShowSummary/ShowSummary';
+import ChangeSeats from './pages/ChangeSeats/ChangeSeats';
+
+
+
 
 
 function App() {
@@ -32,6 +36,9 @@ function App() {
         <Route path="/user/showReservation/:id" element={<ShowReservation/>} />
         <Route path="/user/chooseSeats" element={<ChooseSeats/>} />
         <Route path="/reservation/summary" element={<ShowSummary/>} />
+        <Route path="/user/changeSeats/:id" element={<ChangeSeats/>} />
+      
+       
 
       </Routes>
     </div>

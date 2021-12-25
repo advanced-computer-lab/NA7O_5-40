@@ -21,6 +21,7 @@ import SignUp from "./pages/Signup/Signup";
 import { useAuthContext } from "./Context";
 import NavBar from "./components/NavBar";
 import ProtectedRouteUser from "./routes/ProtectedRouteUser";
+import ProtectedRouteAdmin from "./routes/ProtectedRouteAdmin";
 
 function App() {
   const { isLoggedIn } = useAuthContext();
@@ -33,13 +34,10 @@ function App() {
           <Route exact path="/" element={<Login />} />
 
           <Route exact path="/signup" element={<SignUp />} />
-          {/* <Route exact path="/home" element={<Home />} /> */}
-          <Route exact path="/home" element={<ProtectedRouteUser />}>
-            <Route
-              path="/home"
-              element={<Home />}
-            />
-          </Route>
+          <Route
+            path="/home"
+            element={<Home />}
+          />
 
           <Route exact path="/home/search" element={<Search />} />
           <Route
@@ -47,24 +45,43 @@ function App() {
             path="/home/search/flightDetails"
             element={<FlightDetails />}
           />
-          <Route exact path="/flights" element={<DisplayFlights />} />
-          <Route
-            exact
-            path="/flights/create"
-            element={<CreateFlight />}
-          />
-          <Route exact path="/flight/edit" element={<EditFlight />} />
-          <Route exact path="/user/edit" element={<EditUserProfile />} />
-          <Route
-            exact
-            path="/user/reservations"
-            element={<DisplayReservations />}
-          />
-          <Route
-            exact
-            path="/user/showReservation/:id"
-            element={<ShowReservation />}
-          />
+          <Route exact path="/flights" element={<ProtectedRouteAdmin />}>
+            <Route exact path="/flights" element={<DisplayFlights />} />
+          </Route>
+
+          <Route exact path="/flights/create" element={<ProtectedRouteAdmin />}>
+            <Route
+              exact
+              path="/flights/create"
+              element={<CreateFlight />}
+            />
+          </Route>
+
+          <Route exact path="/flight/edit" element={<ProtectedRouteAdmin />}>
+            <Route exact path="/flight/edit" element={<EditFlight />} />
+          </Route>
+
+
+          <Route exact path="/user/edit" element={<ProtectedRouteUser />}>
+            <Route exact path="/user/edit" element={<EditUserProfile />} />
+          </Route >
+
+          <Route exact path="/user/reservations" element={<ProtectedRouteUser />}>
+            <Route
+              exact
+              path="/user/reservations"
+              element={<DisplayReservations />}
+            />
+          </Route>
+
+          <Route exact path="/user/showReservation/:id" element={<ProtectedRouteUser />}>
+            <Route
+              exact
+              path="/user/showReservation/:id"
+              element={<ShowReservation />}
+            />
+          </Route>
+
           <Route
             exact
             path="/user/chooseSeats"

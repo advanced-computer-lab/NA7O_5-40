@@ -11,12 +11,12 @@ const verifyJWT = (req, res, next) => {
   }
 
   var token = authHeader.split(" ")[1]; // to remove 'BEARER'
-
   try {
     const payload = jwt.verify(token, process.env.JWTSECRET);
     if (payload) {
       req.payload = payload;
       next();
+      // console.log(payload);
     } else {
       return res.status(401).send("Invalid token");
     }
@@ -27,6 +27,7 @@ const verifyJWT = (req, res, next) => {
 
 const checkUser = (req, res, next) => {
   if (req.payload.isAdmin == false) {
+    console.log('IS USEER')
     next();
   } else {
     return res.status(401).send("Not authorized");

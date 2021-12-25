@@ -8,11 +8,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Axios from "axios";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "axios";
+import axios from "../../axios";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -25,8 +24,7 @@ export default function DisplayReservations() {
   const [reservations, setReservations] = useState([]);
   const navigate = useNavigate();
   const getReservationsFromBE = () => {
-    const id = "61a4226a3a570728b6b0dfbf";
-    Axios.get(`http://localhost:8000/user/reservations/${id}`)
+    axios.get(`/user/reservations/dfs`)
       .then((response) => {
 
         setReservations(response.data);

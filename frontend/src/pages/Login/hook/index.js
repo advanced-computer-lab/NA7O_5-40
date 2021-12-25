@@ -39,7 +39,7 @@ const useLoginHook = () => {
 
 
       localStorage.setItem('token', data.accessToken)
-      localStorage.setItem('userData', data.data);
+      localStorage.setItem('userData', JSON.stringify(data.data));
 
       setIsLoggedIn(true);
       

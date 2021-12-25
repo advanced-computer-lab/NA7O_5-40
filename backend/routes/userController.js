@@ -93,14 +93,15 @@ router.post("/changeSeats", async (req, res) => {
 router.post("/availableSeats/:id", async (req, res) => {
   try {
     var flight = await Flight.findById(req.params.id);
-    if(req.body.cabin=="business"){
-    console.log("hereeee");
-    var result=flight.freeSeats.filter((seat) => seat.startsWith('B'));}
-    else{
-      var result=flight.freeSeats.filter((seat) => seat.startsWith('E'));
+    if (req.body.cabin == "business") {
+      console.log("hereeee");
+      var result = flight.freeSeats.filter((seat) => seat.startsWith('B'));
+    }
+    else {
+      var result = flight.freeSeats.filter((seat) => seat.startsWith('E'));
       console.log("thereee");
     }
-    res.status(200).send({ availableSeats:result, flightId: req.params.id });
+    res.status(200).send({ availableSeats: result, flightId: req.params.id });
   }
   catch {
     return res.status(400).send("unsuccessful");
@@ -163,38 +164,39 @@ router.post("/changeFlight", async (req, res) => {
   try {
     var reserv = await Reservation.findById(req.body.reservationId);
     var newFlight = await Flight.findById(req.body.newFlightId);
-    var newSeats=req.body.newSeats;
+    var newSeats = req.body.newSeats;
     if (req.body.flightType == "departure") {
-      var oldFlight =await Flight.findById(reserv.departureFlightId);
-      var oldSeats=reserv.seatNumbersDeparture;
+      var oldFlight = await Flight.findById(reserv.departureFlightId);
+      var oldSeats = reserv.seatNumbersDeparture;
       console.log(newSeats);
       console.log(oldSeats);
-      if(oldSeats.length!=newSeats.length){
-      return res.status(400).send("do not change the number of seats");}
-      await Reservation.findByIdAndUpdate(req.body.reservationId,{seatNumbersDeparture:newSeats});
+      if (oldSeats.length != newSeats.length) {
+        return res.status(400).send("do not change the number of seats");
+      }
+      await Reservation.findByIdAndUpdate(req.body.reservationId, { seatNumbersDeparture: newSeats });
     }
-  
+
     else {
-      var oldFlight =await Flight.findById(reserv.returnFlightId);
-      var oldSeats=reserv.seatNumbersReturn;
-      await Reservation.findByIdAndUpdate(req.body.reservationId,{seatNumbersReturn:newSeats});
+      var oldFlight = await Flight.findById(reserv.returnFlightId);
+      var oldSeats = reserv.seatNumbersReturn;
+      await Reservation.findByIdAndUpdate(req.body.reservationId, { seatNumbersReturn: newSeats });
     }
-    
+
     if (req.body.chosenCabin == "business") {
       var updatedPrice = reserv.price - oldFlight.businessPrice + reserv.adults * newFlight.businessPrice +
         0.5 * (reserv.children * newFlight.businessPrice);
     }
     else {
-      
+
       var updatedPrice = reserv.price - oldFlight.economyPrice + reserv.adults * newFlight.economyPrice +
-      0.5 * (reserv.children * newFlight.economyPrice);
+        0.5 * (reserv.children * newFlight.economyPrice);
       console.log(oldFlight.economyPrice);
     }
     if (req.body.flightType == "departure") {
-     await Reservation.findByIdAndUpdate(req.body.reservationId,{departureFlightId:newFlight._id,price:updatedPrice});
-  }
-    else{
-    await Reservation.findByIdAndUpdate(req.body.reservationId,{returnFlightId:newFlight._id,price:updatedPrice});            
+      await Reservation.findByIdAndUpdate(req.body.reservationId, { departureFlightId: newFlight._id, price: updatedPrice });
+    }
+    else {
+      await Reservation.findByIdAndUpdate(req.body.reservationId, { returnFlightId: newFlight._id, price: updatedPrice });
     }
     res.status(200).send("reservation updated!");
 
@@ -203,7 +205,7 @@ router.post("/changeFlight", async (req, res) => {
 
 
 
-   
+
   }
   catch (err) {
     console.log(err);
@@ -248,7 +250,9 @@ router.get("/reservation/:id", async (req, res) => {
 });
 
 router.get("/reservations/:id", async (req, res) => {
-  Reservation.find({ userId: req.params.id }, function (err, reservations) {
+  var id = req.payload.id;
+
+  Reservation.find({ userId: id }, function (err, reservations) {
     if (!err) {
       reservations.forEach(async (reservation) => {
         var departureFlight = await Flight.findById(
@@ -257,7 +261,7 @@ router.get("/reservations/:id", async (req, res) => {
         var returnFlight = await Flight.findById(reservation.returnFlightId);
         reservation._doc.departureFlight = departureFlight;
         reservation._doc.returnFlight = returnFlight;
-        console.log(reservation);
+        // console.log(reservation);
       });
       //console.log(reservations);
       res.status(200).send(reservations);

@@ -5,11 +5,11 @@ import { useAuthContext } from "../Context";
 function ProtectedRouteUser() {
     const { isLoggedIn } = useAuthContext();
 
-    const token = localStorage.getItem("token");
+    var userData = localStorage.getItem("userData");
 
-    console.log(isLoggedIn);
+    userData = JSON.parse(userData);
     return (
-        isLoggedIn? <Outlet path="/home"/> : <Navigate to="/"/> 
+        isLoggedIn && !userData.isAdmin? <Outlet path="/home"/> : <Navigate to="/"/> 
     );
 }
 

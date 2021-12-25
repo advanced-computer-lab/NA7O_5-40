@@ -1,20 +1,15 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { useAuthContext } from "../Context";
 
 function ProtectedRouteAdmin() {
-    const token = localStorage.getItem("token");
-    let isAuthenticated;
+    const { isLoggedIn } = useAuthContext();
 
-    if(token == null){
-        isAuthenticated = false; 
-    } else {
-        isAuthenticated = true;
-    }
-    
-    
+    var userData = localStorage.getItem("userData");
 
+    userData = JSON.parse(userData);
     return (
-        isAuthenticated? <Outlet path="/home"/> : <Navigate to="/"/> 
+        isLoggedIn && userData.isAdmin? <Outlet path="/admin"/> : <Navigate to="/"/> 
     );
 }
 

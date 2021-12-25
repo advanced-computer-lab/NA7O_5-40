@@ -1,126 +1,126 @@
-import { useState } from 'react';
-import { Form, Input, Button, Alert, Avatar } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import { UserOutlined } from '@ant-design/icons';
-
-import Axios from 'axios';
-import '../components.css'
+import useLoginHook from "./hook";
+const theme = createTheme();
 
 const Login = () => {
-    const [failed, setFailed] = useState(false)
-    const [redirect, setRedirect] = useState(false);
+  const { login } = useLoginHook();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  return (
+    <ThemeProvider theme={theme}>
 
-    const navigate = useNavigate();
+    <Grid container component="main" sx={{ height: "100vh" }}>
+        <CssBaseline />
 
-    const onFinish = ({ username, password }) => {
-        Axios.post('http://localhost:8000/login', {
-            username,
-            password
-        }).then((response) => {
-            //  history.replace('/employee/home')
-            navigate('/flights')
-        }).catch((e) => {
-            console.log(e)
-            setFailed(true)
-        })
-    };
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          sx={{
+            backgroundImage:
+              "url(https://media.npr.org/assets/img/2021/10/06/gettyimages-1302813215_wide-6c48e5a6aff547d2703693450c4805978de47435-s1100-c50.jpg)",
+            backgroundRepeat: "no-repeat",
+            backgroundColor: (t) =>
+              t.palette.mode === "light"
+                ? t.palette.grey[50]
+                : t.palette.grey[900],
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <Box
+            sx={{
+              my: 8,
+              mx: 4,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={(e) => {
+                e.preventDefault();
 
+                login({ email: email, password: password });
+              }}
+              sx={{ mt: 1 }}
+            >
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
 
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
-
-    // if(redirect) {
-    //     return <Redirect to='/somewhere' />;
-    // } 
-
-    return (
-        <div className='login-background' >
-            <div className="login" >
-                <div className='avatar-login'>
-                    <Avatar size={120} style={{ backgroundColor: 'black' }} icon={<UserOutlined />} />
-                </div>
-                <Form
-                    className="login-form"
-                    name="basic"
-                    labelCol={{
-                        span: 6,
-                    }}
-                    wrapperCol={{
-                        span: 16,
-                    }}
-                    initialValues={{
-                        remember: true,
-                    }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    autoComplete="on"
-                >
-                    <Form.Item
-                        label="Username"
-                        name="username"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your username!',
-                                type: 'string',
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your password!',
-                            },
-                        ]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
-
-                    <Form.Item
-                        wrapperCol={{
-                            offset: 11,
-                            span: 4,
-                        }}
-                    >
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Form.Item>
-
-                    <Form.Item
-                        wrapperCol={{
-                            offset: 10,
-                            span: 16,
-                        }}
-                    >
-                        <Link to="/forgotpassword">Forgot Password ?</Link>
-
-                    </Form.Item>
-
-                    {
-                        failed
-                            ?
-                            <Alert
-                                message="Error"
-                                description="Wrong email or password!"
-                                type="error"
-                                showIcon
-                            />
-                            :
-                            null
-                    }
-                </Form>
-            </div>
-        </div>
-    );
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+              <Grid container>
+                {/* <Grid item xs>
+                  <Link href="#" variant="body2">
+                    Forgot password?
+                  </Link>
+                </Grid> */}
+                <Grid item xs>
+                  <Link href="/signup" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
+    </ThemeProvider>
+  );
 };
 
-export default Login
+export default Login;

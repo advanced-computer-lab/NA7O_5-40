@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from "axios";
+import axios from "../../axios";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 
@@ -8,8 +8,8 @@ function EditUserProfile() {
 
     );
      const getUserFromBE = () => {
-        const id = "61a4226a3a570728b6b0dfbf";
-        axios.get(`http://localhost:8000/user/${id}`)
+        // const id = "61a4226a3a570728b6b0dfbf";
+        axios.get(`/user`)
           .then((response) => {
             console.log(response.data);
             setUserProfile(response.data);
@@ -25,7 +25,7 @@ function EditUserProfile() {
         e.preventDefault();
 
         try {
-            await axios.post("http://localhost:8000/user/update", Userr)
+            await axios.post("/user/update", Userr)
             window.alert('User updated')
           
         }

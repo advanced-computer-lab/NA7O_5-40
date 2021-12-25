@@ -23,16 +23,15 @@ we used
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-![LoginPage]
-- This is a login form for users 
-![SignUpPage]
-- For guest users this is a form to fill his information and be a user 
-![SearchFlightPage]
-- For a guest or a user he can search for the flights available
-![MyReservationPage]
-- Show details of a specific reservation of user
-![AllReservationsPage]
--  shows all reservations of user
+![LoginPage]- This is a login form for users 
+
+![SignUpPage]- For guest users this is a form to fill his information and be a user 
+
+![SearchFlightPage]- For a guest or a user he can search for the flights available
+
+![MyReservationPage]- Show details of a specific reservation of user
+
+![AllReservationsPage]-  shows all reservations of user
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -80,8 +79,10 @@ Project Link: https://github.com/advanced-computer-lab/NA7O_5-40.git
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
-[LoginPage]: WhatsApp Image 2021-12-25 at 11.10.15 PM.jpeg
-[AllReservationsPage]:WhatsApp Image 2021-12-25 at 11.10.02 PM.jpeg
-[SearchFlightPage]:WhatsApp Image 2021-12-25 at 11.06.49 PM.jpeg
-[SignUpPage]:WhatsApp Image 2021-12-25 at 11.07.02 PM.jpeg
-[MyReservationPage]:WhatsApp Image 2021-12-25 at 11.10.15 PM.jpeg
+[LoginPage]: ![WhatsApp Image 2021-12-25 at 11 06 30 PM](https://user-images.githubusercontent.com/85501189/147394425-4e0b1698-524e-497d-9191-c3cd67d3aca5.jpeg)
+[AllReservationsPage]:![WhatsApp Image 2021-12-25 at 11 10 02 PM](https://user-images.githubusercontent.com/85501189/147394432-c4e37add-3f08-425b-8aa9-e63735296540.jpeg)
+[SearchFlightPage]:![WhatsApp Image 2021-12-25 at 11 06 49 PM](https://user-images.githubusercontent.com/85501189/147394434-c0b2b2e5-a155-48f5-82f3-23e9895c03d8.jpeg)
+
+[SignUpPage]:![WhatsApp Image 2021-12-25 at 11 07 02 PM](https://user-images.githubusercontent.com/85501189/147394441-b406a0d1-47ae-42c7-8030-38482fb61407.jpeg)
+
+[MyReservationPage]:![WhatsApp Image 2021-12-25 at 11 10 15 PM](https://user-images.githubusercontent.com/85501189/147394444-febc0b7a-29b8-4e38-8fe6-e1a1704f42d6.jpeg)

@@ -1,7 +1,7 @@
 const express = require('express');
 const Admin = require('../models/adminSchema');
 const Flight = require('../models/flightSchema');
-
+const bcrypt = require('bcrypt')
 const router = express.Router();
 
 
@@ -11,17 +11,36 @@ router.get('/home', (req, res) => {
 
 
 router.post('/newAdmin', async (req, res) => {
-    const newAdmin = new Admin({
-        username: req.body.username,
-        password: req.body.password
-    });
+    console.log(req.body);
 
-    try {
-        await newAdmin.save();
-        res.send('Admin added successfully');
-    } catch (e) {
-        res.send('An error occured');
-    }
+    const {
+        email,
+        password
+    } = req.body;
+
+    bcrypt.genSalt(10, function (err, salt) {
+        bcrypt.hash(password, salt, async function (err, hash) {
+            const newAdmin = new Admin({
+                email: email,
+                password: hash,
+            });
+
+            try {
+                await newAdmin.save();
+            } catch (e) {
+                return res.json({
+                    status: false,
+                    message: "An error occured",
+                    error: e
+                });
+            }
+
+            return res.json({
+                status: true,
+                message: "Registered successfully",
+            });
+        });
+    });
 });
 
 

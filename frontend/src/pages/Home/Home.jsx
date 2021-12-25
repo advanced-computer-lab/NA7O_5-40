@@ -43,7 +43,7 @@ const Home = () => {
       if(!searchData.cabinClass){
         return createNotification("Please enter cabin class.", "warning");
       }
-      let { data } = await axios.post('/user/flights/search', searchData);
+      let { data } = await axios.post('/flights/search', searchData);
       let { departureFlights, returnFlights } = data
 
 

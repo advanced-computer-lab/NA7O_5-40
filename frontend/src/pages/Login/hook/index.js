@@ -16,7 +16,7 @@ const useLoginHook = () => {
       }
       if (!password) {
         return createNotification("Please enter your password.", "warning");
-      } 
+      }
 
       let response = await axios.post("/login", {
         email,
@@ -32,20 +32,19 @@ const useLoginHook = () => {
         return;
       }
 
-      // Cookies.set("accessToken", data.accessToken, { expires: 86400 * 1000 });
-      // Cookies.set("userData", JSON.stringify(data.data), {
-      //   expires: 86400 * 1000,
-      // });
-
 
       localStorage.setItem('token', data.accessToken)
       localStorage.setItem('userData', JSON.stringify(data.data));
 
       setIsLoggedIn(true);
-      
+
       createNotification(data.message, "success");
 
-      navigate('/home');
+      if (data.data.isAdmin) {
+        return navigate('/flights')
+      } else {
+        navigate('/home');
+      }
       return data.data;
 
     } catch (e) {

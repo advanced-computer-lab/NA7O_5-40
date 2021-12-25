@@ -25,6 +25,7 @@ import ProtectedRouteAdmin from "./routes/ProtectedRouteAdmin";
 import ReserveFlight from "./pages/ReserveFlight/ReserveFlight";
 import Cancel from "./pages/Cancel/Cancel";
 import ChangeSeats from './pages/ChangeSeats/ChangeSeats'
+import ReplaceFlight from './pages/ReplaceFlight/ReplaceFlight'
 
 function App() {
   const { isLoggedIn } = useAuthContext();
@@ -32,6 +33,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
+
         <NavBar />
         <Routes>
           <Route exact path="/" element={<Login />} />
@@ -50,6 +52,10 @@ function App() {
           />
           <Route exact path="/flights" element={<ProtectedRouteAdmin />}>
             <Route exact path="/flights" element={<DisplayFlights />} />
+          </Route>
+
+          <Route exact path="/user/replaceFlight/:id" element={<ProtectedRouteUser />}>
+            <Route exact path="/user/replaceFlight/:id" element={<ReplaceFlight/>} />
           </Route>
 
           <Route exact path="/flights/create" element={<ProtectedRouteAdmin />}>

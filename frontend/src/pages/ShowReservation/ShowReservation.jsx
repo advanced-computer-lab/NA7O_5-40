@@ -24,6 +24,7 @@ export default function ShowReservation() {
 
   const changeSeatsDeparture = (flight) => {
     var id = flight._id;
+    console.log(flight);
     setFlightType("departure");
     setCabinClass(reservation.chosenCabinDeparture); 
     navigate(`/user/changeSeats/${id}`);
@@ -35,15 +36,17 @@ export default function ShowReservation() {
     navigate(`/user/changeSeats/${id}`);
   };
   const changeFlightDeparture = (flight) => {
-    var id = flight._id;
+    var id = flight._id;  
     setFlightType("departure");  
-    navigate(`/user/changeFlight/${id}`);
+    setCabinClass(reservation.chosenCabinDeparture); 
+    navigate(`/user/replaceFlight/${id}`);
   };
 
   const changeFlightReturn = (flight) => {
     var id = flight._id;
     setFlightType("return");  
-    navigate(`/user/changeFlight/${id}`);
+    setCabinClass(reservation.chosenCabinReturn);
+    navigate(`/user/replaceFlight/${id}`);
   };
 
   const getFlightsFromBE = () => {
@@ -129,7 +132,7 @@ export default function ShowReservation() {
               <Button variant="outlined" onClick={() => {changeSeatsDeparture(depFlight)}}>Change Seats</Button>
               </TableCell>
               <TableCell align="left">
-              <Button variant="outlined" onClick={() => {changeSeatsDeparture(depFlight)}}>Change Flight</Button>
+              <Button variant="outlined" onClick={() => {changeFlightDeparture(depFlight)}}>Change Flight</Button>
               </TableCell>
             </TableRow>
           </TableBody>
@@ -173,7 +176,7 @@ export default function ShowReservation() {
               <Button variant="outlined" onClick={() => {changeSeatsReturn(returnFlight)}}>Change Seats</Button>
               </TableCell>
               <TableCell align="left">
-              <Button variant="outlined" onClick={() => {changeSeatsDeparture(depFlight)}}>Change Flight</Button>
+              <Button variant="outlined" onClick={() => {changeFlightReturn(returnFlight)}}>Change Flight</Button>
               </TableCell>
             </TableRow>
           </TableBody>

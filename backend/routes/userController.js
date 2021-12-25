@@ -6,7 +6,6 @@ const Reservation = require("../models/reservationSchema");
 const endOfDay = require("date-fns/endOfDay");
 const startOfDay = require("date-fns/startOfDay");
 const { parseISO, parse } = require("date-fns");
-const { body, validationResult } = require("express-validator");
 const sendMail = require("../helpers/sendMail");
 const stripe = require('stripe')(process.env.STRIPEKEY);
 
@@ -142,7 +141,6 @@ router.post("/availableSeats/:id", async (req, res) => {
 //search for flights needs:flight id and type(economy or business) of reserved flight  to be edited,cabin class for search,departure date for search
 router.post("/searchFlights", async (req, res) => {
   try {
-
     var test = "test";
     var oldFlight = await Flight.findById(req.body.oldFlightId);
     var oldCabinClass = req.body.oldCabinClass;
@@ -232,12 +230,6 @@ router.post("/changeFlight", async (req, res) => {
       await Reservation.findByIdAndUpdate(req.body.reservationId, { returnFlightId: newFlight._id, price: updatedPrice });
     }
     res.status(200).send("reservation updated!");
-
-
-
-
-
-
 
   }
   catch (err) {
@@ -447,67 +439,5 @@ function checkFreeSeatsAvailable(cabin, flight, requiredSeats) {
 
   return false;
 }
-
-// flight search
-router.post("/flights/search", async (req, res) => {
-  console.log(req.body);
-
-  var { adults, children, departureAirport, returnAirport, cabinClass } = req.body;
-
-
-
-  var depDate = new Date(req.body.departureDate)
-  var returnDate = new Date(req.body.returnDate);
-
-  console.log(depDate);
-  console.log(startOfDay(depDate));
-  console.log(endOfDay(depDate));
-
-  var noOfRequiredSeats = parseInt(adults) + parseInt(children);
-
-  var candidateDepFlights = await Flight.find({
-    departureAirport: departureAirport,
-    arrivalAirport: returnAirport,
-    departureDate: {
-      $gte: startOfDay(depDate),
-      $lte: endOfDay(depDate),
-    },
-  });
-
-  var candidateReturnFlights = await Flight.find({
-    departureAirport: returnAirport,
-    arrivalAirport: departureAirport,
-    departureDate: {
-      $gte: startOfDay(returnDate),
-      $lte: endOfDay(returnDate),
-    },
-  });
-
-  // console.log(candidateFlights);
-  var departureFlights = [];
-  var returnFlights = [];
-
-  candidateDepFlights.forEach((flight) => {
-    if (checkFreeSeatsAvailable(cabinClass, flight, noOfRequiredSeats))
-      departureFlights.push(flight);
-
-  });
-
-  candidateReturnFlights.forEach((flight) => {
-    if (checkFreeSeatsAvailable(cabinClass, flight, noOfRequiredSeats))
-      returnFlights.push(flight);
-  });
-
-  if (returnFlights.length == 0 || departureFlights.length == 0)
-    return res.status(400).send('No flights found matching your criteria');
-
-  // console.log(result);
-  res.status(200).send({
-    departureFlights,
-    returnFlights
-  });
-
-  // res.status(400).send(e.codeName);
-});
 
 module.exports = router;

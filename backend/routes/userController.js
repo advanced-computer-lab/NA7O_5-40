@@ -110,6 +110,7 @@ router.post("/availableSeats/:id", async (req, res) => {
 //search for flights needs:flight id and type(economy or business) of reserved flight  to be edited,cabin class for search,departure date for search
 router.post("/searchFlights", async (req, res) => {
   try {
+
     var test = "test";
     var oldFlight = await Flight.findById(req.body.oldFlightId);
     var oldCabinClass = req.body.oldCabinClass;
@@ -417,8 +418,15 @@ router.post("/flights/search", async (req, res) => {
   console.log(req.body);
 
   var { adults, children, departureAirport, arrivalAirport, cabinClass } = req.body;
-  var depDate = parseISO(req.body.departureDate);
-  var returnDate = parseISO(req.body.returnDate);
+
+
+
+var depDate = new Date(req.body.departureDate)
+  var returnDate = new Date(req.body.returnDate);
+
+  console.log(depDate);
+  console.log(startOfDay(depDate));
+  console.log(endOfDay(depDate));
 
   var noOfRequiredSeats = parseInt(adults) + parseInt(children);
 
@@ -430,6 +438,7 @@ router.post("/flights/search", async (req, res) => {
       $lte: endOfDay(depDate),
     },
   });
+  console.log(candidateDepFlights);
 
   var candidateReturnFlights = await Flight.find({
     departureAirport: arrivalAirport,

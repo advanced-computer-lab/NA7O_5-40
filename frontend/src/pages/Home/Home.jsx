@@ -23,7 +23,7 @@ const Home = () => {
   });
 
   async function formSubmit(e) {
-    console.log('searchings')
+    console.log(searchData)
     e.preventDefault();
 
     try {

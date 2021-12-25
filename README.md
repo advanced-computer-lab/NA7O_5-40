@@ -47,6 +47,8 @@ By the end of each sprint we always join everything together make some last chan
 
 ## Credits
 we always used geeksforgeeks and stackoverflow to help us with any problem, and they were always helpful and benefical to us
+https://stackoverflow.com
+https://www.geeksforgeeks.org
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->

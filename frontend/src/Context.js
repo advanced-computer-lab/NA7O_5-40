@@ -71,9 +71,12 @@ export const UserProvider = ({ children }) => {
   const [returnFlights, setReturnFlights] = useState(null);
   const [chosenDepartureFlight, setChosenDepartureFlight] = useState(null);
   const [chosenReturnFlight, setChosenReturnFlight] = useState(null);
+  const [reservation,setReservation]=useState(null);
   const [chosenSeatsDeparture, setChosenSeatsDeparture] = useState([]);
   const [chosenSeatsReturn, setChosenSeatsReturn] = useState([]);
-
+  const [flightType,setFlightType]=useState("");
+  const [cabinClass,setCabinClass]=useState("");
+ 
   return (
     <UserContext.Provider
       value={{
@@ -87,12 +90,19 @@ export const UserProvider = ({ children }) => {
         setChosenDepartureFlight,
         chosenReturnFlight,
         setChosenReturnFlight,
+        reservation,
+        setReservation,
         chosenSeatsDeparture,
         setChosenSeatsDeparture,
-        chosenSeatsReturn,
-        setChosenSeatsReturn,
         createNotification,
         userData,
+        chosenSeatsReturn, 
+        setChosenSeatsReturn,
+        flightType,
+        setFlightType,
+        cabinClass,
+        setCabinClass
+        
       }}
     >
       <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>

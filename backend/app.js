@@ -9,6 +9,7 @@ const app = express();
 const port = process.env.port || '8000'
 
 app.use(cookieParser())
+
 app.use(express.json());
 app.use(cors());
 

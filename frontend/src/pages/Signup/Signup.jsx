@@ -15,23 +15,39 @@ import MuiPhoneNumber from 'mui-phone-number';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import useSignupHook from "./hook";
+
 
 const theme = createTheme();
 
 export default function SignUp() {
+    const { signup } = useSignupHook();
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         // eslint-disable-next-line no-console
-        console.log({
+
+        var info = {
             email: data.get('email'),
             password: data.get('password'),
-        });
+            firstName: data.get('firstName'),
+            lastName: data.get('lastName'),
+            phoneNumber: data.get('phoneNumber'),
+            address: data.get('address'),
+            passportNumber: data.get('passportNumber')
+        };
+        console.log(info);
+
+        signup(info)
+
+
     };
 
     return (
         <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" >
+                
                 <CssBaseline />
                 <Box
                     sx={{
@@ -90,6 +106,15 @@ export default function SignUp() {
                                     autoComplete="address"
                                 />
                             </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="passportNumber"
+                                    label="Passport Number"
+                                    name="passportNumber"
+                                />
+                            </Grid>
                             {/* <MuiPhoneNumber defaultCountry={'us'}  />, */}
 
                             <Grid item xs={12}>
@@ -97,10 +122,10 @@ export default function SignUp() {
                                     variant="outlined"
                                     required
                                     fullWidth
-                                    name="phone"
+                                    name="phoneNumber"
                                     label="Phone Number"
                                     data-cy="user-phone"
-                                    defaultCountry={"in"}
+                                    defaultCountry={"eg"}
 
                                 />
                             </Grid>
@@ -128,7 +153,7 @@ export default function SignUp() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="/" variant="body2">
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>

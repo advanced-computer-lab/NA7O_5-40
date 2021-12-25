@@ -18,8 +18,8 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    phoneNumbers: {
-        type: [String],
+    phoneNumber: {
+        type: String,
         default: []
     },
     passportNumber: {

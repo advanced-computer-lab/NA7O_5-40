@@ -39,25 +39,15 @@ we used
 
 <!-- ROADMAP -->
 ## Roadmap
-
-
+on the beginning of every sprint we met, divided the work and divided ourselves 2 groups, group of 3 and group of 2 and each member of the group worked in parallel with the other member.
+we used to join a zoom meeting everyday night for an hour or two to follow up with our work and discuss problems and try solve them.
+By the end of each sprint we always join everything together make some last changes and submit.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
-
-<!-- CONTRIBUTING -->
-## Contributing
+## Credits
+we always used geeksforgeeks and stackoverflow to help us with any problem, and they were always helpful and benefical to us
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- LICENSE -->
-## License
-
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
 
 <!-- CONTACT -->
 ## Contact

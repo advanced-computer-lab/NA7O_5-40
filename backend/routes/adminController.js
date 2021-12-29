@@ -119,6 +119,7 @@ router.get('/flight/delete/:id', async (req, res) => {
 });
 
 router.get('/flights', async (req, res) => {
+    console.log('GETTING FLIGHTS');
     try {
         const allFlights = await Flight.find();
         res.status(200).send(allFlights);

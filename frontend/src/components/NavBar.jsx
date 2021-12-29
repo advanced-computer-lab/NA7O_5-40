@@ -23,6 +23,22 @@ const NavBar = () => {
 
   const navigate = useNavigate();
 
+
+  const [isAdmin, setIsAdmin] = React.useState(false);
+
+  React.useEffect(() => {
+    // get user data from local storage
+    var userData = JSON.parse(localStorage.getItem('userData'));
+
+    console.log(userData)
+    // console.log('isAdmin' + " " + userData.isAdmin);
+    if (userData == null) {
+      setIsAdmin(false)
+    } else
+      setIsAdmin(userData.isAdmin)
+  },
+    [JSON.parse(localStorage.getItem('userData'))]);
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -42,7 +58,7 @@ const NavBar = () => {
   };
 
   return (
-    
+
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -100,49 +116,54 @@ const NavBar = () => {
           >
             GUC Airways
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <Button
-              key="home"
-              onClick={() => {
-                navigate("/home");
-              }}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              Home
-            </Button>
 
-            {
-              isLoggedIn ? (
-                <Button
-                  key="profile"
-                  onClick={() => {
-                    navigate("/user/edit");
-                  }}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                >
-                  Profile
-                </Button>
-              ) : (
-                <></>
-              )
-            }
+          {isAdmin ? (<></>) : (
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
 
-            {
-              isLoggedIn ?
-                (
+
+              <Button
+                key="home"
+                onClick={() => {
+                  navigate("/home");
+                }}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                Home
+              </Button>
+
+              {
+                isLoggedIn ? (
                   <Button
-                    key="reservations"
+                    key="profile"
                     onClick={() => {
-                      navigate("/user/reservations");
+                      navigate("/user/edit");
                     }}
                     sx={{ my: 2, color: "white", display: "block" }}
                   >
-                    Reservations
+                    Profile
                   </Button>
-                ) :
-                (<></>)
-            }
-          </Box>
+                ) : (
+                  <></>
+                )
+              }
+
+              {
+                isLoggedIn ?
+                  (
+                    <Button
+                      key="reservations"
+                      onClick={() => {
+                        navigate("/user/reservations");
+                      }}
+                      sx={{ my: 2, color: "white", display: "block" }}
+                    >
+                      Reservations
+                    </Button>
+                  ) :
+                  (<></>)
+              }
+            </Box>
+          )}
 
           <Box sx={{ flexGrow: 0 }}>
 

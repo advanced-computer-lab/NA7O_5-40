@@ -26,6 +26,10 @@ import ReserveFlight from "./pages/ReserveFlight/ReserveFlight";
 import Cancel from "./pages/Cancel/Cancel";
 import ChangeSeats from './pages/ChangeSeats/ChangeSeats'
 import ReplaceFlight from './pages/ReplaceFlight/ReplaceFlight'
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import FlightList from './pages/FlightList/FlightList'
+import NewFlightItenerary from './pages/NewFlightItenerary/NewFlightItenerary'
+import ChooseNewSeats from './pages/ChooseNewSeats/ChooseNewSeats'
 
 function App() {
   const { isLoggedIn } = useAuthContext();
@@ -36,6 +40,7 @@ function App() {
 
         <NavBar />
         <Routes>
+
           <Route exact path="/" element={<Login />} />
 
           <Route exact path="/signup" element={<SignUp />} />
@@ -43,6 +48,22 @@ function App() {
             path="/home"
             element={<Home />}
           />
+
+          <Route exact path="/user/chooseNewSeats" element={<ProtectedRouteUser />}>
+            <Route exact path="/user/chooseNewSeats" element={<ChooseNewSeats />} />
+          </Route>
+
+          <Route exact path="/user/newFlightItenerary" element={<ProtectedRouteUser />}>
+            <Route exact path="/user/newFlightItenerary" element={<NewFlightItenerary />} />
+          </Route>
+
+          <Route exact path="/user/flightList" element={<ProtectedRouteUser />}>
+            <Route
+              exact
+              path="/user/flightList"
+              element={<FlightList />}
+            />
+          </Route>
 
           <Route exact path="/home/search" element={<Search />} />
           <Route
@@ -55,7 +76,11 @@ function App() {
           </Route>
 
           <Route exact path="/user/replaceFlight/:id" element={<ProtectedRouteUser />}>
-            <Route exact path="/user/replaceFlight/:id" element={<ReplaceFlight/>} />
+            <Route exact path="/user/replaceFlight/:id" element={<ReplaceFlight />} />
+          </Route>
+
+          <Route exact path="/user/changePassword" element={<ProtectedRouteUser />}>
+            <Route exact path="/user/changePassword" element={<ChangePassword />} />
           </Route>
 
           <Route exact path="/flights/create" element={<ProtectedRouteAdmin />}>

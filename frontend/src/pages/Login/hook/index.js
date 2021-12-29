@@ -22,7 +22,7 @@ const useLoginHook = () => {
         email,
         password,
       });
-
+      
       let data = response.data;
 
       console.log(`user data from login hook is: ${data.data}`);

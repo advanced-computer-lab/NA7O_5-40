@@ -79,6 +79,10 @@ export const UserProvider = ({ children }) => {
   const [oldDepFlight, setOldDepFlight] = useState(null);
   const [flightsResults, setFlightsResults] = useState([]);
 
+  const [priceDifferences, setPriceDifferences] = useState([]);
+  const [newFlight, setNewFlight] = useState(null);
+  const [newCabinClass, setNewCabinClass] = useState(null);
+
   return (
     <UserContext.Provider
       value={{
@@ -107,8 +111,13 @@ export const UserProvider = ({ children }) => {
         oldDepFlight,
         setOldDepFlight,
         flightsResults,
-        setFlightsResults
-
+        setFlightsResults,
+        priceDifferences,
+        setPriceDifferences,
+        newFlight,
+        setNewFlight,
+        newCabinClass,
+        setNewCabinClass
       }}
     >
       <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>

@@ -14,6 +14,7 @@ const router = express.Router();
 
 
 router.post('/checkout', async (req, res) => {
+
   try {
     const session = await stripe.checkout.sessions.create({
       success_url: 'http://localhost:3000/user/reserveFlight',
@@ -44,7 +45,7 @@ router.post('/checkout', async (req, res) => {
 router.post('/update-password', async (req, res) => {
   const { id } = req.payload;
   const { oldPassword, newPassword } = req.body;
-
+  console.log(req.body)
   var dbUser = await User.findById(id);
 
   if (!oldPassword || !newPassword) {
@@ -70,11 +71,19 @@ router.post('/update-password', async (req, res) => {
 
           await User.findByIdAndUpdate(id, { 'password': hash });
 
-          res.status(200).send('Password updated successfully');
+          // res.status(200).send('Password updated successfully');
+          res.json({
+            status: true,
+            message: "Password updated successfully"
+          });
         });
       });
     } else {
-      res.status(400).send('The password you entered is invalid');
+      //res.status(400).send('The password you entered is invalid');
+      res.json({
+        status: false,
+        message: "The password you entered is invalid"
+      });
     }
   });
 });
@@ -138,6 +147,7 @@ router.post("/availableSeats/:id", async (req, res) => {
     return res.status(400).send("unsuccessful");
   }
 })
+
 //search for flights needs:flight id and type(economy or business) of reserved flight  to be edited,cabin class for search,departure date for search
 router.post("/searchFlights", async (req, res) => {
   try {
@@ -155,7 +165,9 @@ router.post("/searchFlights", async (req, res) => {
     if (req.body.cabinClass == "business") {
       console.log("hi");
       var newFlights = flights.filter((flight) => (
-        checkFreeSeatsAvailable("business", flight, 1) == 1
+        checkFreeSeatsAvailable("business", flight, 1) == 1 &&
+        flight.departureAirport == oldFlight.departureAirport &&
+        flight.arrivalAirport == oldFlight.arrivalAirport
       )
       );
 
@@ -167,14 +179,36 @@ router.post("/searchFlights", async (req, res) => {
       )
       );
     }
-    if (oldCabinClass == "business") {
+    if (oldCabinClass == "business" && req.body.cabinClass == "business") {
       var priceDifferences = [];
       for (var i = 0; i < newFlights.length; i++) {
         priceDifferences[i] = newFlights[i].businessPrice - oldFlight.businessPrice;
-
       }
     }
     else {
+      if (oldCabinClass == "economy" && req.body.cabinClass == "business") {
+        var priceDifferences = [];
+        for (var i = 0; i < newFlights.length; i++) {
+          priceDifferences[i] = newFlights[i].businessPrice - oldFlight.economyPrice;
+        }
+      }
+      else {
+        if (oldCabinClass == "business" && req.body.cabinClass == "economy") {
+          var priceDifferences = [];
+          for (var i = 0; i < newFlights.length; i++) {
+            priceDifferences[i] = newFlights[i].economyPrice - oldFlight.businessPrice;
+          }
+
+        }
+        else {
+          var priceDifferences = [];
+          for (var i = 0; i < newFlights.length; i++) {
+            priceDifferences[i] = newFlights[i].economyPrice - oldFlight.economyPrice;
+
+          }
+
+        }
+      }
 
     }
 
@@ -190,6 +224,7 @@ router.post("/searchFlights", async (req, res) => {
   }
 
 })
+
 // needs id of reservation,type of flight(departure or return),id of new flight,chosen Cabin,new seatnumbers
 router.post("/changeFlight", async (req, res) => {
   try {
@@ -417,7 +452,42 @@ router.post("/reservation/create", async (req, res) => {
   console.log(newReservation);
   try {
     await newReservation.save();
-    res.status(200).send("Reservation added successfully");
+
+
+    sendMail(
+      userEmail,
+      "Flight Itnerary",
+      `Booking number: ${reservation._id}
+    
+    ======================
+    Departure Flight
+    ======================
+    Flight No: ${departureFlight.flightNo}
+    Departure Airport: ${departureFlight.departureAirport}
+    Arrival Airport: ${departureFlight.arrivalAirport}
+    Departure Time: ${departureFlight.departureDate}
+    Arrival Time: ${departureFlight.arrivalDate}
+    Baggage Allowance: ${departureFlight.baggageAllowance}
+    Seats: ${reservation.seatNumbersDeparture}
+
+    ======================
+    Return Flight
+    ======================
+    Flight No: ${returnFlight.flightNo}
+    Departure Airport: ${returnFlight.departureAirport}
+    Arrival Airport: ${returnFlight.arrivalAirport}
+    Departure Time: ${returnFlight.departureDate}
+    Arrival Time: ${returnFlight.arrivalDate}
+    Baggage Allowance: ${returnFlight.baggageAllowance}
+    Seats: ${reservation.seatNumbersDeparture}
+
+    ======================
+    Ticket price: \$${reservation.price}
+    `
+    )
+
+
+    return res.status(200).send("Reservation added successfully");
   } catch (e) {
     if (e.code === 11000) {
       res.status(400).send("Reservation no already exists");
@@ -425,6 +495,61 @@ router.post("/reservation/create", async (req, res) => {
     }
 
     res.status(400).send(e.message);
+  }
+});
+
+router.post("/email-itinerary", async (req, res) => {
+
+  var reservation = req.body;
+
+  var user = await User.findById(req.payload.id);
+  var userEmail = user.email;
+
+  var departureFlight = await Flight.findById(reservation.departureFlightId);
+  var returnFlight = await Flight.findById(reservation.returnFlightId);
+
+  var status = await sendMail(
+    userEmail,
+    "Flight Itnerary",
+    `Booking number: ${reservation._id}
+    
+    ======================
+    Departure Flight
+    ======================
+    Flight No: ${departureFlight.flightNo}
+    Departure Airport: ${departureFlight.departureAirport}
+    Arrival Airport: ${departureFlight.arrivalAirport}
+    Departure Time: ${departureFlight.departureDate}
+    Arrival Time: ${departureFlight.arrivalDate}
+    Baggage Allowance: ${departureFlight.baggageAllowance}
+    Seats: ${reservation.seatNumbersDeparture}
+
+    ======================
+    Return Flight
+    ======================
+    Flight No: ${returnFlight.flightNo}
+    Departure Airport: ${returnFlight.departureAirport}
+    Arrival Airport: ${returnFlight.arrivalAirport}
+    Departure Time: ${returnFlight.departureDate}
+    Arrival Time: ${returnFlight.arrivalDate}
+    Baggage Allowance: ${returnFlight.baggageAllowance}
+    Seats: ${reservation.seatNumbersDeparture}
+
+    ======================
+    Ticket price: \$${reservation.price}
+    `
+  )
+
+  if (status) {
+    return res.json({
+      status: true,
+      message: "Email sent successfully"
+    });
+  } else {
+    return res.json({
+      status: false,
+      message: "Cannot send email, try again later"
+    });
   }
 });
 

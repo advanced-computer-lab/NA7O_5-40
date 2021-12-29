@@ -21,8 +21,7 @@ export default function ReplaceFlight() {
     const navigate = useNavigate();
     const id = useParams();
     const [date, setDate] = useState([]);
-    const [newCabinClass, setNewCabinClass] = useState([]);
-    const {flightType,setFlightType,cabinClass,setCabinClass,flightsresults,setFlightsResults}= useContext(UserContext);
+    const {flightType,setFlightType,cabinClass,setCabinClass,flightsResults,setFlightsResults,priceDifferences,setPriceDifferences,newCabinClass,setNewCabinClass}= useContext(UserContext);
 
 
 
@@ -33,19 +32,11 @@ export default function ReplaceFlight() {
             var name = id.id;
            var body={oldFlightId:name,oldCabinClass:cabinClass,departureDate:date,cabinClass:newCabinClass};
             console.log(body);
-            Axios.post(
-                'http://localhost:8000/user/searchFlights', body
-              )
-                .then((response) => {
-                  console.log(response);
-                 
-                  navigate("/user/flightList");
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
-            
-          
+           var result=await Axios.post('http://localhost:8000/user/searchFlights', body );
+           setFlightsResults(result.data.newFlights);  
+           setPriceDifferences(result.data.priceDifferences);   
+                  console.log(result);                
+                  navigate("/user/flightList");      
         }
 
         catch (err) {

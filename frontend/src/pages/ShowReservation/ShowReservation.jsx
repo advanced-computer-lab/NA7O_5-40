@@ -90,7 +90,7 @@ export default function ShowReservation() {
     <CircularProgress />
   ) : (
     <div>
-      <Link to="/user/reservations">Show all reservations</Link>
+      {/* <Link to="/user/reservations">Show all reservations</Link > */}
 
       <br />
       <br />
@@ -138,6 +138,8 @@ export default function ShowReservation() {
           </TableBody>
         </Table>
       </TableContainer >
+      <br></br>
+      <br></br>
       Return Flight
       < TableContainer component={Paper} >
         <Table sx={{ minWidth: 650 }} aria-label="simple table">

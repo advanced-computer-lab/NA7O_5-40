@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport({
         ciphers: 'SSLv3'
     },
     auth: {
-        user: 'flightguc@hotmail.com',
+        user: 'gucairways@outlook.com',
         pass: 'Qwerty2021'
     }
 });
@@ -17,18 +17,18 @@ const sendMail = async (emailAddress, subject, message) => {
     
     try {
         let info = await transporter.sendMail({
-            from: 'flightguc@hotmail.com', // sender address
+            from: 'gucairways@outlook.com', // sender address
             to: emailAddress, // list of receivers
             subject: subject, // Subject line
             text: message, // plain text body
             // html: "<b>Hello world?</b>", // html body
         });
 
-        
-        return 'message sent';
+        console.log(info)
+        return true;
         
     } catch (e) {
-       
+       console.log(e);
         return e.message;
         
     }
